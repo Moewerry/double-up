@@ -9,9 +9,9 @@ describe("正式配置通关回放的边界", () => {
     expect(() => recordReplay({ ...createSession(1), status: "won", undoUsed: true }, [])).toThrow("只能记录")
   })
 
-  it("拒绝未知关卡、旧种子以及非法方向", () => {
+  it("拒绝未知关卡、旧配置以及非法方向", () => {
     expect(() => replaySolution({ rules: 1, level: 99 })).toThrow("不存在")
-    expect(() => replaySolution({ rules: 1, level: 1, seed: 1, target: 16, configVersion: 1 })).toThrow("配置已变化")
+    expect(() => replaySolution({ rules: 1, level: 1, seed: 1, target: 32, configVersion: 1 })).toThrow("配置已变化")
     expect(() => replaySolution({ rules: 1, level: 1, seed: 104729, target: 16, configVersion: 1, directions: ["diagonal"] })).toThrow("方向序列")
   })
 
@@ -27,5 +27,17 @@ describe("正式配置通关回放的边界", () => {
   it("不能把超过步数上限的局面导出成通关证明", () => {
     const session = { ...createSession(4), status: "won" as const, moves: getLevel(4).maxMoves! + 1, tiles: [{ id: 1, value: 64, position: 0 }, { id: 2, value: 2, position: 1 }] }
     expect(() => recordReplay(session, [])).toThrow("只能记录")
+  })
+
+  it.each([undefined, 0, -1, 1.5, 0x100000000])("拒绝不合法的回放种子 %s", seed => {
+    expect(() => replaySolution({ rules: 1, level: 1, seed, target: 16, configVersion: 1 })).toThrow("种子")
+  })
+
+  it("记录真实开局种子，并拒绝脱离这个开局伪造的通关路径", () => {
+    const session = { ...createSession(1, 65536), status: "won" as const, moves: 1, score: 16, tiles: [{ id: 1, value: 16, position: 0 }, { id: 2, value: 2, position: 1 }] }
+    const replay = recordReplay(session, ["left"])
+    expect(replay.seed).toBe(65536)
+    expect(replay.seed).not.toBe(getLevel(1).seed)
+    expect(() => replaySolution(replay)).toThrow("路径未能通关")
   })
 })

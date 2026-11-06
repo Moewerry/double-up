@@ -28,8 +28,8 @@ function rank(session: Session): number {
   return Math.log2(maximum) * 200 + board.filter(value => !value).length * 48 + adjacent * 12 + cornerBonus - roughness * 3
 }
 
-function findPath(level: number): Candidate | null {
-  let frontier: Candidate[] = [{ session: createSession(level), path: [], rank: 0 }]
+function findPath(initial: Session): Candidate | null {
+  let frontier: Candidate[] = [{ session: initial, path: [], rank: 0 }]
   let expansions = 0
   for (let depth = 0; depth < maximumDepth && frontier.length; depth++) {
     const candidates = new Map<string, Candidate>()
@@ -64,23 +64,24 @@ async function main() {
     for (const [index, replay] of data.replays.entries()) {
       const session = replaySolution(replay)
       if (session.level !== levels[index].id) throw new Error("回放关卡顺序不正确或重复。")
-      console.log(`第 ${session.level} 关回放通过：${session.moves} 步，${session.score} 分。`)
+      console.log(`第 ${session.level} 关回放通过：开局种子 ${session.seed}，${session.moves} 步，${session.score} 分。`)
     }
     return
   }
 
   const replays: LevelReplay[] = []
   for (const level of levels) {
-    const result = findPath(level.id)
-    if (!result) throw new Error(`第 ${level.id} 关在搜索预算内未找到路径。这不证明无解；已停止，不会改写已有回放文件。`)
+    const initial = createSession(level.id)
+    const result = findPath(initial)
+    if (!result) throw new Error(`第 ${level.id} 关的随机开局（种子 ${initial.seed}）在搜索预算内未找到路径。这不证明无解；已停止，不会改写已有回放文件。`)
     const replay = recordReplay(result.session, result.path)
     replaySolution(replay)
     replays.push(replay)
-    console.log(`第 ${level.id} 关找到路径并回放通过：${replay.expected.moves} 步，${replay.expected.score} 分，最大方块 ${replay.expected.maximum}。`)
+    console.log(`第 ${level.id} 关找到样本路径并回放通过：开局种子 ${replay.seed}，${replay.expected.moves} 步，${replay.expected.score} 分，最大方块 ${replay.expected.maximum}。`)
   }
   if (arguments_.includes("--write")) {
     await writeFile(output, JSON.stringify({ version: 1, replays }, null, 2) + "\n", "utf8")
-    console.log(`通关路径已写入 ${fileURLToPath(output)}。这仅证明这些路径可通关，仍需人工试玩评估难度。`)
+    console.log(`样本通关路径已写入 ${fileURLToPath(output)}。这仅证明这些随机开局中的路径可通关，不代表所有随机开局或所有走法都能通关，仍需多样本验证和人工试玩。`)
   } else {
     console.log(JSON.stringify({ version: 1, replays }, null, 2))
     console.log("未写入文件。如需保留已找到的路径，请使用 --write。")

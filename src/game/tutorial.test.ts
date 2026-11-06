@@ -1,6 +1,8 @@
-import { describe, expect, it } from "vitest"
+import { afterEach, describe, expect, it, vi } from "vitest"
 import { createSession } from "./engine"
 import { createTutorial, moveTutorial, nextTutorialStep, resetTutorialStep, tutorialComplete, tutorialSteps } from "./tutorial"
+
+afterEach(() => vi.unstubAllGlobals())
 
 function completeGuidedSteps() {
   let state = createTutorial()
@@ -26,7 +28,7 @@ describe("交互教程", () => {
   it("前七步必须真实移动或合并，最后进入正式第一关初始局面", () => {
     const state = completeGuidedSteps()
     expect(state.step).toBe(7)
-    expect(state.session).toEqual(createSession(1))
+    expect(state.session).toEqual(createSession(1, state.session.seed))
     expect(tutorialComplete(state)).toBe(false)
   })
 
@@ -59,5 +61,22 @@ describe("交互教程", () => {
     expect(won.session.status).toBe("won")
     expect(tutorialComplete(won)).toBe(true)
     expect(nextTutorialStep(won)).toBe(won)
+  })
+
+  it("引导练习固定，最后的自由练习及重试使用新的随机开局", () => {
+    const seeds = [1, 65536]
+    const getRandomValues = vi.fn((values: Uint32Array) => { values[0] = seeds.shift()!; return values })
+    vi.stubGlobal("crypto", { getRandomValues })
+    expect(createTutorial()).toEqual(createTutorial())
+    expect(getRandomValues).not.toHaveBeenCalled()
+    const state = completeGuidedSteps()
+    expect(state.session.seed).toBe(1)
+    expect(getRandomValues).toHaveBeenCalledTimes(1)
+    const reset = resetTutorialStep(state)
+    expect(reset.session.seed).toBe(65536)
+    expect(reset.session.tiles[0].position).toBe(2)
+    expect(reset.session).toBe(reset.checkpoint)
+    expect(reset.phase).toBe("playing")
+    expect(getRandomValues).toHaveBeenCalledTimes(2)
   })
 })

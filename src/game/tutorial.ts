@@ -1,4 +1,5 @@
 import { createSession, move } from "./engine"
+import { getLevel } from "./levels"
 import type { Direction, Motion, Session } from "./types"
 
 interface PracticeTile { readonly value: number; readonly position: number }
@@ -37,7 +38,8 @@ export interface TutorialState {
 }
 
 function practiceSession(step: TutorialStep): Session {
-  const initial = createSession(1)
+  if (step.kind === "free") return createSession(1)
+  const initial = createSession(1, getLevel(1).seed)
   if (!step.tiles) return initial
   return { ...initial, tiles: step.tiles.map((tile, index) => ({ ...tile, id: index + 1 })), nextId: step.tiles.length + 1 }
 }
@@ -71,5 +73,6 @@ export function nextTutorialStep(state: TutorialState): TutorialState {
 }
 
 export function resetTutorialStep(state: TutorialState): TutorialState {
-  return { ...state, session: state.checkpoint, phase: "playing", feedback: "", hint: 0, motions: [], gained: 0, revision: state.revision + 1 }
+  const checkpoint = tutorialSteps[state.step].kind === "free" ? createSession(1) : state.checkpoint
+  return { ...state, session: checkpoint, checkpoint, phase: "playing", feedback: "", hint: 0, motions: [], gained: 0, revision: state.revision + 1 }
 }

@@ -43,6 +43,6 @@ export function TutorialPage() {
       </div>
       <p id="board-help" className="sr-only">{lesson.direction ? `本步请向${({ left: "左", up: "上", right: "右", down: "下" } as const)[lesson.direction]}滑动棋盘。` : `自由移动，合成 ${target}。`}也可以使用方向键或 WASD。{state.phase === "passed" ? "本步已完成，可以继续。" : ""}</p>
     </GameLayout>
-    <RestartDialog open={restart} onOpenChange={setRestart} onRestart={reset} blocked={false} title="重试这一步？" description="恢复这一步的初始棋盘。" />
+    <RestartDialog open={restart} onOpenChange={setRestart} onRestart={reset} blocked={false} title="重试这一步？" description={lesson.kind === "free" ? "随机生成新的棋盘。" : "恢复这一步的初始棋盘。"} />
   </>
 }
