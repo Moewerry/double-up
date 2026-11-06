@@ -29,7 +29,7 @@ export function GamePage() {
   function reset() { clear(); store.restart(); setRestart(false); setResult(false) }
   return <>
     <GameLayout header={<header className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2">
-      <Button variant="ghost" className="-ml-3 h-11 justify-self-start rounded-xl" asChild><Link to="/"><ArrowLeft />首页</Link></Button>
+      <Button variant="ghost" size="icon" className="size-11 justify-self-start rounded-full" asChild><Link to="/" aria-label="返回首页"><ArrowLeft aria-hidden /></Link></Button>
       <h1 aria-label={`本关目标数字 ${level.target}`} className="text-4xl font-extrabold leading-none tracking-tight text-[#a95233] tabular-nums lg:text-5xl">{level.target}</h1>
       <div className="flex items-center gap-1 justify-self-end">
         <KeyboardGuideDialog onOpenChange={setGuide} />
