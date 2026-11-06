@@ -22,9 +22,10 @@ function validSnapshot(v: unknown): v is Snapshot {
 function validSession(v: unknown, current: number): v is Session {
   if (!validSnapshot(v) || !object(v) || v.configVersion !== 1 || !integer(v.level, 1) || typeof v.undoUsed !== "boolean") return false
   if (v.level !== current && v.level !== current - 1) return false
+  const level = getLevel(v.level)
   if (v.previous !== null && (!validSnapshot(v.previous) || v.previous.status !== "playing" || v.previous.moves !== v.moves - 1 || v.previous.score > v.score)) return false
-  if (v.previous && (!canMove(v.previous.tiles) || v.previous.tiles.some(tile => tile.value >= getLevel(v.level).target))) return false
-  const reached = Math.max(...v.tiles.map(t => t.value)) >= getLevel(v.level).target
+  if (v.previous && (!canMove(v.previous.tiles) || v.previous.tiles.some(tile => tile.value >= level.target))) return false
+  const reached = Math.max(...v.tiles.map(t => t.value)) >= level.target
   return v.status === "won" ? reached : !reached && (v.status === "playing" ? canMove(v.tiles) : !canMove(v.tiles))
 }
 export function currentLevel(records: Save["records"]) {

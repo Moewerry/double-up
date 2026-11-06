@@ -10,6 +10,9 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "typecheck": "tsc --noEmit",
+    "test:run": "vitest run",
+    "levels:verify": "tsx scripts/verify-levels.ts",
+    "levels:replay": "tsx scripts/verify-levels.ts --replay",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -31,7 +34,9 @@
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^5.2.0",
     "tailwindcss": "^4.3.5",
+    "tsx": "^4.23.15",
     "typescript": "^5.9.3",
-    "vite": "^7.3.7"
+    "vite": "^7.3.7",
+    "vitest": "^4.1.12"
   }
 }

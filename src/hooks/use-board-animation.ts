@@ -18,7 +18,13 @@ export function useBoardAnimation(revision: number, hasMotions: boolean, enabled
     let secondFrame = 0
     const frame = requestAnimationFrame(() => { secondFrame = requestAnimationFrame(() => setPhase("moving")) })
     const timer = setTimeout(() => setPhase("done"), MOVE_DURATION)
-    const finish = () => setPhase("done")
+    const finish = () => {
+      cancelAnimationFrame(frame)
+      cancelAnimationFrame(secondFrame)
+      clearTimeout(timer)
+      animatedRevision.current = null
+      setPhase("done")
+    }
     document.addEventListener("visibilitychange", finish)
     return () => {
       cancelAnimationFrame(frame)
