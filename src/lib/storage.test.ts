@@ -1,9 +1,10 @@
-import { afterEach, describe, expect, it, vi } from "vitest"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { createSession, move, undo } from "@/game/engine"
 import { getLevel } from "@/game/levels"
 import type { Direction } from "@/game/types"
 import { decodeSave, emptySave, loadSave, persist } from "./storage"
 
+beforeEach(() => vi.stubGlobal("crypto", { getRandomValues: vi.fn((values: Uint32Array) => { values[0] = 104729; return values }) }))
 afterEach(() => vi.unstubAllGlobals())
 
 describe("存档恢复", () => {
@@ -132,5 +133,31 @@ describe("限步存档兼容", () => {
     expect(restored.notice).not.toBe("")
     expect(restored.data.session).toEqual(createSession(5))
     expect(restored.data.records).toEqual(save.records)
+  })
+})
+
+describe("随机种子存档", () => {
+  it("刷新恢复保存的开局与随机流，包括还未移动的新局，不重新抽样", () => {
+    const save = emptySave()
+    const getRandomValues = vi.mocked(globalThis.crypto.getRandomValues)
+    getRandomValues.mockClear()
+    expect(decodeSave(JSON.stringify(save)).data).toEqual(save)
+    expect(getRandomValues).not.toHaveBeenCalled()
+  })
+
+  it("旧存档补齐历史种子，不改变已有数字位置或随机流", () => {
+    const { seed: _seed, ...legacySession } = createSession(2, getLevel(2).seed)
+    const save = { ...emptySave(), records: { "1": { score: 32, moves: 12 } }, session: legacySession }
+    const restored = decodeSave(JSON.stringify(save))
+    expect(restored.notice).toBe("")
+    expect(restored.data.session).toEqual({ ...legacySession, seed: getLevel(2).seed })
+    expect(restored.data.records).toEqual(save.records)
+  })
+
+  it.each([0, -1, 1.5, 0x100000000])("损坏的开局种子 %s 会重新准备本关", seed => {
+    const save = emptySave()
+    const restored = decodeSave(JSON.stringify({ ...save, session: { ...save.session, seed } }))
+    expect(restored.notice).not.toBe("")
+    expect(restored.data.session).toEqual(createSession(1))
   })
 })

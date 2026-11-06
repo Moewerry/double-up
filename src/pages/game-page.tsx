@@ -27,6 +27,7 @@ export function GamePage() {
   const resultButton = useRef<HTMLButtonElement>(null)
   const enabled = !store.blocked && !result && !restart && !settings && !guide && session.status === "playing"
   const { submit, clear, feedback } = useGameInput(enabled)
+  useEffect(() => { useGameStore.getState().start() }, [])
   useEffect(() => { if (session.status !== "playing") setResult(true) }, [session.status, session.level])
   function reset() { clear(); store.restart(); setRestart(false); setResult(false) }
   return <>

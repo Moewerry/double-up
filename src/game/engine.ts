@@ -1,5 +1,6 @@
 import { getLevel } from "./levels"
 import { getStatus, remainingMoves } from "./rules"
+import { isSeed, randomSeed } from "./random"
 import type { Direction, Motion, Session, Snapshot, Tile } from "./types"
 
 export { canMove } from "./rules"
@@ -18,10 +19,11 @@ function spawn(state: Snapshot): Snapshot {
   const [valueRoll, second] = random(first)
   return { ...state, random: second, nextId: state.nextId + 1, tiles: [...state.tiles, { id: state.nextId, value: valueRoll < .9 ? 2 : 4, position: empty[Math.floor(positionRoll * empty.length)] }] }
 }
-export function createSession(level: number): Session {
+export function createSession(level: number, seed = randomSeed()): Session {
   const config = getLevel(level)
-  const state = spawn(spawn({ tiles: [], score: 0, moves: 0, random: config.seed, nextId: 1, status: "playing" }))
-  return { ...state, level, configVersion: config.version, undoUsed: false, previous: null }
+  if (!isSeed(seed)) throw new Error("开局种子必须为非零的 32 位无符号整数。")
+  const state = spawn(spawn({ tiles: [], score: 0, moves: 0, random: seed, nextId: 1, status: "playing" }))
+  return { ...state, level, seed, configVersion: config.version, undoUsed: false, previous: null }
 }
 function linePositions(line: number, direction: Direction) {
   return Array.from({ length: 4 }, (_, offset) => {
@@ -54,12 +56,12 @@ export function move(session: Session, direction: Direction): { session: Session
     }
   }
   if (tiles.length === session.tiles.length && motions.every(m => m.tile.position === m.destination)) return { session, motions: [], gained: 0 }
-  const { level: _level, configVersion: _version, undoUsed: _undo, previous: _previous, ...previous } = session
+  const { level: _level, seed: _seed, configVersion: _version, undoUsed: _undo, previous: _previous, ...previous } = session
   const next = spawn({ tiles, score, moves: session.moves + 1, random: session.random, nextId, status: "playing" })
   next.status = getStatus(next, config)
-  return { session: { ...next, level: session.level, configVersion: config.version, undoUsed: session.undoUsed, previous }, motions, gained: score - session.score }
+  return { session: { ...next, level: session.level, seed: session.seed, configVersion: config.version, undoUsed: session.undoUsed, previous }, motions, gained: score - session.score }
 }
 export function undo(session: Session): Session {
   if (session.undoUsed || !session.previous || session.status === "won") return session
-  return { ...session.previous, level: session.level, configVersion: session.configVersion, undoUsed: true, previous: null }
+  return { ...session.previous, level: session.level, seed: session.seed, configVersion: session.configVersion, undoUsed: true, previous: null }
 }

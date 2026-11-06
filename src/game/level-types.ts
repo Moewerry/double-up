@@ -1,6 +1,6 @@
 export const levelTypes = [
   { id: "merge", label: "数字合并", description: "不限步数，通过合并达到本关目标。" },
-  { id: "layout", label: "布局练习", description: "在固定开局中练习保留空位和摆放大数字。" },
+  { id: "layout", label: "布局练习", description: "练习保留空位和摆放大数字。" },
   { id: "moves", label: "限步挑战", description: "在规定的有效步数内合出目标数字。" },
 ] as const
 
@@ -13,6 +13,7 @@ export interface LevelConfig {
   readonly title: string
   readonly target: number
   readonly maxMoves?: number
+  /** 教学预设和旧存档使用的基准种子，正常新局使用独立随机种子。 */
   readonly seed: number
   readonly tip: string
 }

@@ -11,6 +11,7 @@ export interface Snapshot {
 }
 export interface Session extends Snapshot {
   level: number
+  seed: number
   configVersion: number
   undoUsed: boolean
   previous: Snapshot | null

@@ -3,7 +3,7 @@ import { canMove, createSession, move, undo } from "./engine"
 import type { Direction, Session } from "./types"
 
 function fixture(board: readonly number[], level = 5): Session {
-  return { ...createSession(level), tiles: board.flatMap((value, position) => value ? [{ id: position + 1, value, position }] : []), nextId: 17 }
+  return { ...createSession(level, 205019), tiles: board.flatMap((value, position) => value ? [{ id: position + 1, value, position }] : []), nextId: 17 }
 }
 function beforeSpawn(session: Session) {
   return Array.from({ length: 16 }, (_, position) => session.tiles.find(tile => tile.position === position && tile.id !== session.nextId - 1)?.value ?? 0)
@@ -66,6 +66,7 @@ describe("胜负与撤销", () => {
     expect(restored.status).toBe("playing")
     expect(restored.tiles).toEqual(initial.tiles)
     expect(restored.undoUsed).toBe(true)
+    expect(restored.seed).toBe(initial.seed)
   })
 
   it("同一步达标且棋盘无路可走时优先判定通关", () => {
@@ -95,12 +96,13 @@ describe("胜负与撤销", () => {
     expect(replayed.score).toBe(first.score)
     expect(replayed.moves).toBe(first.moves)
     expect(replayed.undoUsed).toBe(true)
+    expect(replayed.seed).toBe(initial.seed)
     expect(undo(replayed)).toBe(replayed)
   })
 
-  it("新局可复现初始棋盘，并重置撤销资格", () => {
-    expect(createSession(5)).toEqual(createSession(5))
-    expect(createSession(5).undoUsed).toBe(false)
-    expect(createSession(5).previous).toBeNull()
+  it("指定种子的新局可复现初始棋盘，并重置撤销资格", () => {
+    expect(createSession(5, 205019)).toEqual(createSession(5, 205019))
+    expect(createSession(5, 205019).undoUsed).toBe(false)
+    expect(createSession(5, 205019).previous).toBeNull()
   })
 })

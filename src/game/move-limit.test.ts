@@ -6,7 +6,7 @@ import type { Session } from "./types"
 
 const limit = getLevel(4).maxMoves!
 function fixture(board: number[], moves: number, level = 4): Session {
-  return { ...createSession(level), moves, tiles: board.flatMap((value, position) => value ? [{ id: position + 1, value, position }] : []), nextId: 17 }
+  return { ...createSession(level, getLevel(level).seed), moves, tiles: board.flatMap((value, position) => value ? [{ id: position + 1, value, position }] : []), nextId: 17 }
 }
 
 describe("限步关卡", () => {

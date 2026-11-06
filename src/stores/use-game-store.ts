@@ -16,6 +16,7 @@ interface GameStore {
   revision: number
   gained: number
   clearFeedback: ClearFeedback | null
+  start: () => void
   move: (direction: Direction) => boolean
   undo: () => void
   restart: () => void
@@ -32,6 +33,10 @@ export const useGameStore = create<GameStore>((set, get) => {
   }
   return {
     ...initial, motions: [], revision: 0, gained: 0, clearFeedback: null,
+    start() {
+      const state = get()
+      if (!state.blocked && state.saveStatus !== "saved") commit(state.data)
+    },
     move(direction) {
       const state = get()
       if (state.blocked) return false

@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import { emptySave, SAVE_KEY } from "@/lib/storage"
+import { decodeSave, emptySave, SAVE_KEY } from "@/lib/storage"
 import { createSession } from "@/game/engine"
 import { getLevel } from "@/game/levels"
 
@@ -34,6 +34,7 @@ describe("进度与存档协调", () => {
 
   it("未知版本和其他标签页改写后，不允许重试覆盖旧存档", async () => {
     const { store, setItem } = await setup(JSON.stringify({ ...emptySave(), version: 99 }))
+    store.getState().start()
     store.getState().retrySave()
     store.getState().toggle("sound")
     expect(store.getState().move("left")).toBe(false)
@@ -98,5 +99,35 @@ describe("进度与存档协调", () => {
     expect(store.getState().data.records["4"]).toEqual(save.records["4"])
     expect(store.getState().data.records["5"]).toEqual({ score: 64, moves: getLevel(5).maxMoves, configVersion: getLevel(5).version })
     expect(store.getState().clearFeedback).toEqual({ firstClear: true, bestScore: false, fewestMoves: false })
+  })
+
+  it("进入关卡就保存零步开局，重复进入或刷新不重新抽样", async () => {
+    const getRandomValues = vi.fn((values: Uint32Array) => { values[0] = 1; return values })
+    vi.stubGlobal("crypto", { getRandomValues })
+    const { store, setItem } = await setup()
+    const initial = structuredClone(store.getState().data)
+    expect(setItem).not.toHaveBeenCalled()
+    store.getState().start()
+    store.getState().start()
+    expect(setItem).toHaveBeenCalledTimes(1)
+    expect(getRandomValues).toHaveBeenCalledTimes(1)
+    getRandomValues.mockClear()
+    expect(decodeSave(setItem.mock.calls[0][1]).data).toEqual(initial)
+    expect(getRandomValues).not.toHaveBeenCalled()
+  })
+
+  it("重新开始随机生成开局，恢复全部步数并保留通关记录", async () => {
+    const seeds = [1, 65536]
+    vi.stubGlobal("crypto", { getRandomValues: (values: Uint32Array) => { values[0] = seeds.shift()!; return values } })
+    const { store, setItem } = await setup()
+    const save = store.getState().data
+    const records = { "1": { score: 32, moves: 12 }, "2": { score: 80, moves: 20 }, "3": { score: 200, moves: 35 } }
+    store.setState({ data: { ...save, records, session: { ...createSession(4, 1), moves: 20, score: 48, undoUsed: true } } })
+    store.getState().restart()
+    const restarted = store.getState().data.session
+    expect(restarted).toMatchObject({ level: 4, seed: 65536, moves: 0, score: 0, status: "playing", undoUsed: false, previous: null })
+    expect(restarted.tiles[0].position).toBe(2)
+    expect(store.getState().data.records).toEqual(records)
+    expect(JSON.parse(setItem.mock.calls[0][1]).session).toEqual(restarted)
   })
 })
