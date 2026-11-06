@@ -3,12 +3,11 @@ import { Link, useNavigate } from "react-router-dom"
 import { ArrowLeft, Flag } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { SettingsDialog } from "@/components/settings-dialog"
-import { SaveIndicator } from "@/components/save-indicator"
 import { Board } from "@/components/game/board"
 import { GameControls } from "@/components/game/game-controls"
 import { DirectionControls } from "@/components/game/direction-controls"
 import { ResultDialog } from "@/components/game/result-dialog"
-import { GameSummary } from "@/components/game/game-summary"
+import { ScorePanel } from "@/components/game/score-panel"
 import { RestartDialog } from "@/components/game/restart-dialog"
 import { MoveFeedback } from "@/components/game/move-feedback"
 import { getLevel } from "@/game/levels"
@@ -29,23 +28,24 @@ export function GamePage() {
   function reset() { clear(); store.restart(); setRestart(false); setResult(false) }
   function undo() { clear(); store.undo(); setResult(false) }
   return <div className="mx-auto w-full max-w-[480px] lg:max-w-none">
-    <header className="flex items-center justify-between">
-      <Button variant="ghost" className="h-11 -ml-3 rounded-xl" asChild><Link to="/"><ArrowLeft />首页</Link></Button>
-      <span className="text-sm font-bold tracking-tight lg:text-base">doubleup<span className="text-[#a95233]">.</span></span>
-      <SettingsDialog onOpenChange={setSettings} />
+    <header className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2">
+      <Button variant="ghost" className="-ml-3 h-11 justify-self-start rounded-xl" asChild><Link to="/"><ArrowLeft />首页</Link></Button>
+      <h1 aria-label={`本关目标数字 ${level.target}`} className="text-4xl font-extrabold leading-none tracking-tight text-[#a95233] tabular-nums lg:text-5xl">{level.target}</h1>
+      <div className="flex items-center justify-self-end"><SettingsDialog onOpenChange={setSettings} /></div>
     </header>
     <div className="mx-auto lg:grid lg:max-w-[960px] lg:grid-cols-[minmax(0,480px)_minmax(0,360px)] lg:grid-rows-[auto_1fr] lg:justify-center lg:gap-x-16 lg:py-12">
-      <GameSummary level={level} session={session} record={store.data.records[String(session.level)]} gained={store.gained} revision={store.revision} />
+      <section aria-label="本局成绩" className="flow-root min-w-0 lg:col-start-2 lg:row-start-1">
+        <ScorePanel score={session.score} moves={session.moves} best={store.data.records[String(session.level)]?.score ?? 0} gained={store.gained} revision={store.revision} />
+      </section>
       <section aria-label="游戏棋盘" className="min-w-0 lg:col-start-1 lg:row-span-2 lg:row-start-1">
         <Board session={session} motions={store.motions} revision={store.revision} onMove={submit} enabled={enabled} />
-        <p id="board-help" className="mt-5 text-center text-xs leading-6 text-muted-foreground">滑动棋盘，或使用方向键 / WASD · 不限步数</p>
-        <MoveFeedback session={session} message={feedback} tip={level.tip} />
+        <p id="board-help" className="sr-only">使用方向键或 WASD 移动方块。触屏可以在棋盘上滑动。</p>
+        <MoveFeedback session={session} message={feedback} />
       </section>
       <section aria-label="游戏操作" className="min-w-0 lg:col-start-2 lg:row-start-2">
         {session.status !== "playing" && <Button ref={resultButton} className="mt-4 h-11 w-full" onClick={() => setResult(true)}><Flag />查看{session.status === "won" ? "通关" : "挑战"}结果</Button>}
         <GameControls session={session} disabled={store.blocked} onUndo={undo} onRestart={() => { clear(); if (session.moves === 0) reset(); else setRestart(true) }} onDirections={() => store.toggle("directions")} directions={store.data.directions} />
         {store.data.directions && <DirectionControls onMove={submit} disabled={!enabled} />}
-        <footer className="py-7 text-center"><SaveIndicator /><p className="mt-2 text-[10px] tracking-wider text-muted-foreground">前 5 关开发预览 · 通关后继续下一关</p></footer>
       </section>
     </div>
     {session.status !== "playing" && <ResultDialog session={session} open={result} onOpenChange={setResult} onRestoreFocus={() => (resultButton.current ?? document.getElementById("double-up-board"))?.focus({ preventScroll: true })} blocked={store.blocked} onNext={() => { clear(); store.next(); setResult(false) }} onRestart={reset} onUndo={undo} onHome={() => navigate("/")} />}
