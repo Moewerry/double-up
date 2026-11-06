@@ -14,7 +14,7 @@ export function App() {
     window.addEventListener("storage", onStorage)
     return () => window.removeEventListener("storage", onStorage)
   }, [])
-  return <HashRouter><main className="mx-auto min-h-dvh w-full max-w-[480px] px-5 pt-[max(1rem,env(safe-area-inset-top))] pb-[env(safe-area-inset-bottom)] sm:px-8 sm:pt-7">
+  return <HashRouter><main className="mx-auto min-h-dvh w-full max-w-[480px] px-5 pt-[max(1rem,env(safe-area-inset-top))] pb-[env(safe-area-inset-bottom)] sm:px-8 sm:pt-7 lg:max-w-[1120px] lg:px-10">
     <SaveNotice />
     <Routes><Route path="/" element={<HomePage />} /><Route path="/play" element={<GamePage />} /><Route path="*" element={<Navigate to="/" replace />} /></Routes>
   </main></HashRouter>

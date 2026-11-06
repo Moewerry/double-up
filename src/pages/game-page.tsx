@@ -32,7 +32,7 @@ export function GamePage() {
   useEffect(() => { if (session.status !== "playing") setResult(true) }, [session.status, session.level])
   function reset() { clear(); store.restart(); setRestart(false); setResult(false) }
   function undo() { clear(); store.undo(); setResult(false) }
-  return <>
+  return <div className="mx-auto w-full max-w-[480px]">
     <header className="flex items-center justify-between">
       <Button variant="ghost" className="h-11 -ml-3 rounded-xl" asChild><Link to="/"><ArrowLeft />首页</Link></Button>
       <span className="text-sm font-bold tracking-tight">doubleup<span className="text-[#a95233]">.</span></span>
@@ -55,5 +55,5 @@ export function GamePage() {
     <footer className="py-7 text-center"><SaveIndicator /><p className="mt-2 text-[10px] tracking-wider text-muted-foreground">前 5 关开发预览 · 通关后继续下一关</p></footer>
     {session.status !== "playing" && <ResultDialog session={session} open={result} onOpenChange={setResult} onRestoreFocus={() => (resultButton.current ?? document.getElementById("double-up-board"))?.focus({ preventScroll: true })} blocked={store.blocked} onNext={() => { clear(); store.next(); setResult(false) }} onRestart={reset} onUndo={undo} onHome={() => navigate("/")} />}
     <Dialog open={restart} onOpenChange={setRestart}><DialogContent className="max-w-[400px] rounded-[20px]" onCloseAutoFocus={event => { event.preventDefault(); document.getElementById("double-up-board")?.focus({ preventScroll: true }) }}><DialogHeader><DialogTitle>从这一关重新开始？</DialogTitle><DialogDescription>本局分数和步数将重置，已有通关记录会保留。</DialogDescription></DialogHeader><div className="mt-2 flex gap-3"><Button className="h-11 flex-1" variant="outline" onClick={() => setRestart(false)}>继续这一局</Button><Button className="h-11 flex-1" onClick={reset} disabled={store.blocked}>重新开始</Button></div></DialogContent></Dialog>
-  </>
+  </div>
 }
