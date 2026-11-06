@@ -1,11 +1,9 @@
-import { ArrowRight, Check, MoveRight } from "lucide-react"
+import { ArrowRight } from "lucide-react"
 import { Link } from "react-router-dom"
 import { Brand } from "@/components/brand"
 import { SettingsDialog } from "@/components/settings-dialog"
 import { MergeIllustration } from "@/components/home/merge-illustration"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
 import { levels } from "@/game/levels"
 import { useGameStore } from "@/stores/use-game-store"
 
@@ -24,10 +22,5 @@ export function HomePage() {
         {blocked ? <span>请先恢复存档</span> : <Link to="/play">{label}<ArrowRight className="ml-auto size-5" /></Link>}
       </Button>
     </section>
-    <Card className="gap-0 border-border/80 bg-white/70 py-0 shadow-none"><CardContent className="p-5">
-      <div className="flex items-center justify-between text-sm"><span className="font-semibold">你的翻倍旅程</span><span className="text-xs text-muted-foreground">{completed} / {levels.length} 关</span></div>
-      <Progress className="my-4 h-1.5 [&_[data-slot=progress-indicator]]:bg-[#579478]" value={completed / levels.length * 100} aria-label={`已完成 ${completed} 关，共 ${levels.length} 关`} />
-      <div className="flex items-center justify-between text-xs text-muted-foreground"><span className="flex items-center gap-1.5">{finished ? <Check className="size-3.5" /> : <MoveRight className="size-3.5" />}{finished ? "第一章完成，很棒的一段旅程" : "初识数字 · 一关一关向前"}</span><span className="text-[10px]">开发预览</span></div>
-    </CardContent></Card>
   </>
 }
