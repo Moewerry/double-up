@@ -8,7 +8,7 @@ interface Props { state: TutorialState; busy: boolean; onNext: () => void; onRes
 
 export function TutorialActions({ state, busy, onNext, onReset, onStartOver }: Props) {
   const complete = tutorialComplete(state)
-  return <div className="space-y-2 pt-5 lg:pt-8">
+  return <div className="space-y-2">
     {complete ? <>
       <Button className="h-12 w-full rounded-xl text-base font-bold" disabled={busy} asChild={!busy}>{busy ? <span>去闯关</span> : <Link to="/play">去闯关<ArrowRight /></Link>}</Button>
       <Button variant="ghost" className="h-11 w-full rounded-xl" disabled={busy} onClick={onStartOver}><RotateCcw />再练一次</Button>

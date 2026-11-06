@@ -12,7 +12,7 @@ export function TutorialPanel({ state }: { state: TutorialState }) {
   const title = passed ? lesson.success : state.phase === "lost" ? "再试一次" : lesson.prompt
   const feedback = state.feedback === "direction" ? "跟着箭头试试" : state.feedback === "blocked" ? "换个方向试试" : ""
   const Icon = tutorialComplete(state) ? Sparkles : Check
-  return <div className="py-4 lg:py-0">
+  return <div>
     <div className="flex items-center justify-between gap-3 text-xs text-muted-foreground"><span>新手教程</span><span className="tabular-nums">{state.step + 1} / {tutorialSteps.length}</span></div>
     <Progress className="mt-2 h-1.5" value={completed / tutorialSteps.length * 100} aria-label="教程进度" aria-valuetext={`已完成 ${completed} 个练习，共 ${tutorialSteps.length} 个`} />
     <div className="mt-3 text-center lg:mt-8 lg:text-left" role="status" aria-live="polite" aria-atomic="true">
