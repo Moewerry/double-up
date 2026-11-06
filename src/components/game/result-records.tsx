@@ -1,8 +1,10 @@
 import { Sparkles } from "lucide-react"
 import { useGameStore } from "@/stores/use-game-store"
+import { getLevel } from "@/game/levels"
+import { currentRecord } from "@/game/records"
 
 export function ResultRecords({ level }: { level: number }) {
-  const record = useGameStore(state => state.data.records[String(level)])
+  const record = useGameStore(state => currentRecord(state.data.records, getLevel(level)))
   const feedback = useGameStore(state => state.clearFeedback)
   if (!record) return null
 

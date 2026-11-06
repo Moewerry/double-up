@@ -1,6 +1,7 @@
 import { createSession } from "@/game/engine"
 import { getLevel, levels } from "@/game/levels"
 import { getStatus } from "@/game/rules"
+import { currentRecord } from "@/game/records"
 import type { Save, Session, Snapshot } from "@/game/types"
 
 export const SAVE_KEY = "double-up:save:v1"
@@ -51,7 +52,7 @@ export function decodeSave(raw: string | null): LoadedSave {
       }
     }
     const current = currentLevel(records)
-    const valid = validSession(value.session, current) && (value.session.status !== "won" || !!records[String(value.session.level)])
+    const valid = validSession(value.session, current) && (value.session.status !== "won" || !!currentRecord(records, getLevel(value.session.level)))
     return {
       data: { ...fallback, records, sound: value.sound === true, directions: value.directions === true, session: valid ? value.session as Session : createSession(current) },
       notice: valid ? "" : "当前局面无法恢复或配置已更新，已准备本关新局，历史通关记录保留。",

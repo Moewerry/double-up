@@ -120,4 +120,17 @@ describe("限步存档兼容", () => {
     expect(restored.data).toEqual(save)
     expect(restored.data.session.status).toBe("won")
   })
+
+  it("新版胜局不能用旧版成绩充当通关纪录，历史解锁资格仍保留", () => {
+    const save = fourthLevelSave()
+    save.session.status = "won"
+    save.session.moves = 30
+    save.session.score = 64
+    save.session.tiles = [{ id: 1, value: 64, position: 0 }, { id: 2, value: 2, position: 1 }]
+    save.records["4"] = { score: 1024, moves: 50 }
+    const restored = decodeSave(JSON.stringify(save))
+    expect(restored.notice).not.toBe("")
+    expect(restored.data.session).toEqual(createSession(5))
+    expect(restored.data.records).toEqual(save.records)
+  })
 })
