@@ -3,12 +3,14 @@ import { createSession, move, undo } from "@/game/engine"
 import { levels } from "@/game/levels"
 import type { Direction, Motion, Save } from "@/game/types"
 import { loadSave, persist } from "@/lib/storage"
+import type { SaveStatus } from "@/lib/storage"
 
 const initial = loadSave()
 interface GameStore {
   data: Save
   notice: string
   blocked: boolean
+  saveStatus: SaveStatus
   motions: Motion[]
   revision: number
   gained: number
@@ -18,11 +20,13 @@ interface GameStore {
   next: () => void
   toggle: (key: "sound" | "directions") => void
   externalChange: () => void
+  retrySave: () => void
+  dismissNotice: () => void
 }
 export const useGameStore = create<GameStore>((set, get) => {
   function commit(data: Save, extra: Partial<GameStore> = {}) {
     const saved = persist(data)
-    set({ data, notice: saved ? get().notice : "当前进度无法自动保存，请检查浏览器存储设置。", ...extra })
+    set({ data, saveStatus: saved ? "saved" : "unavailable", ...extra })
   }
   return {
     ...initial, motions: [], revision: 0, gained: 0,
@@ -59,5 +63,11 @@ export const useGameStore = create<GameStore>((set, get) => {
       if (!state.blocked) commit({ ...state.data, [key]: !state.data[key] })
     },
     externalChange() { set({ blocked: true, notice: "其他标签页已更改进度。请刷新页面，读取最新存档后继续。" }) },
+    retrySave() {
+      if (!get().blocked) commit(get().data)
+    },
+    dismissNotice() {
+      if (!get().blocked) set({ notice: "" })
+    },
   }
 })

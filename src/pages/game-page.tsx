@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Progress } from "@/components/ui/progress"
 import { SettingsDialog } from "@/components/settings-dialog"
+import { SaveIndicator } from "@/components/save-indicator"
 import { Board } from "@/components/game/board"
 import { ScorePanel } from "@/components/game/score-panel"
 import { GameControls } from "@/components/game/game-controls"
@@ -47,7 +48,7 @@ export function GamePage() {
     {session.status !== "playing" && <Button ref={resultButton} className="mt-4 h-11 w-full" onClick={() => setResult(true)}><Flag />查看{session.status === "won" ? "通关" : "挑战"}结果</Button>}
     <GameControls session={session} disabled={store.blocked} onUndo={undo} onRestart={() => { clear(); if (session.moves === 0) reset(); else setRestart(true) }} onDirections={() => store.toggle("directions")} directions={store.data.directions} />
     {store.data.directions && <DirectionControls onMove={submit} disabled={!enabled} />}
-    <footer className="py-7 text-center text-[10px] tracking-wider text-muted-foreground">前 5 关开发预览 · 通关后继续下一关</footer>
+    <footer className="py-7 text-center"><SaveIndicator /><p className="mt-2 text-[10px] tracking-wider text-muted-foreground">前 5 关开发预览 · 通关后继续下一关</p></footer>
     <ResultDialog session={session} open={result} onOpenChange={setResult} onRestoreFocus={() => (resultButton.current ?? document.getElementById("double-up-board"))?.focus({ preventScroll: true })} blocked={store.blocked} onNext={() => { clear(); store.next(); setResult(false) }} onRestart={reset} onUndo={undo} onHome={() => navigate("/")} />
     <Dialog open={restart} onOpenChange={setRestart}><DialogContent className="max-w-[400px] rounded-[20px]" onCloseAutoFocus={event => { event.preventDefault(); document.getElementById("double-up-board")?.focus({ preventScroll: true }) }}><DialogHeader><DialogTitle>从这一关重新开始？</DialogTitle><DialogDescription>本局分数和步数将重置，已有通关记录会保留。</DialogDescription></DialogHeader><div className="mt-2 flex gap-3"><Button className="h-11 flex-1" variant="outline" onClick={() => setRestart(false)}>继续这一局</Button><Button className="h-11 flex-1" onClick={reset} disabled={store.blocked}>重新开始</Button></div></DialogContent></Dialog>
   </>

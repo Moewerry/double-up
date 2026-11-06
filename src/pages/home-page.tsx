@@ -2,6 +2,7 @@ import { ArrowRight, Check, MoveRight, Sprout } from "lucide-react"
 import { Link } from "react-router-dom"
 import { Brand } from "@/components/brand"
 import { SettingsDialog } from "@/components/settings-dialog"
+import { SaveIndicator } from "@/components/save-indicator"
 import { MergeIllustration } from "@/components/home/merge-illustration"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -25,13 +26,13 @@ export function HomePage() {
       <Button className="h-14 w-full rounded-xl text-base font-bold shadow-[0_5px_0_#e58b65] transition-transform active:translate-y-1 active:shadow-none" disabled={blocked} asChild={!blocked}>
         {blocked ? <span>请先恢复存档</span> : <Link to="/play">{label}<ArrowRight className="ml-auto size-5" /></Link>}
       </Button>
-      <p className="mt-4 text-xs text-muted-foreground">{session.status === "playing" ? `第 ${session.level} 关 · 合成 ${getLevel(session.level).target} · ${session.moves ? `已走 ${session.moves} 步` : "不限步数，慢慢来"}` : "每一步进度，都会自动保存"}</p>
+      <p className="mt-4 text-xs text-muted-foreground">{session.status === "playing" ? `第 ${session.level} 关 · 合成 ${getLevel(session.level).target} · ${session.moves ? `已走 ${session.moves} 步` : "不限步数，慢慢来"}` : "查看本关结果，接着向前。"}</p>
     </section>
     <Card className="gap-0 border-border/80 bg-white/70 py-0 shadow-none"><CardContent className="p-5">
       <div className="flex items-center justify-between text-sm"><span className="font-semibold">你的翻倍旅程</span><span className="text-xs text-muted-foreground">{completed} / {levels.length} 关</span></div>
       <Progress className="my-4 h-1.5 [&_[data-slot=progress-indicator]]:bg-[#579478]" value={completed / levels.length * 100} aria-label={`已完成 ${completed} 关，共 ${levels.length} 关`} />
       <div className="flex items-center justify-between text-xs text-muted-foreground"><span className="flex items-center gap-1.5">{finished ? <Check className="size-3.5" /> : <MoveRight className="size-3.5" />}{finished ? "第一章完成，很棒的一段旅程" : "初识数字 · 一关一关向前"}</span><span className="text-[10px]">开发预览</span></div>
     </CardContent></Card>
-    <footer className="pb-4 pt-8 text-center text-[11px] tracking-wide text-muted-foreground">无需登录 · 自动保存 · 随时回来</footer>
+    <footer className="pb-4 pt-8 text-center"><SaveIndicator /><p className="mt-2 text-[11px] tracking-wide text-muted-foreground">无需登录 · 随时回来</p></footer>
   </>
 }
