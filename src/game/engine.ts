@@ -16,8 +16,9 @@ function spawn(state: Snapshot): Snapshot {
   return { ...state, random: second, nextId: state.nextId + 1, tiles: [...state.tiles, { id: state.nextId, value: valueRoll < .9 ? 2 : 4, position: empty[Math.floor(positionRoll * empty.length)] }] }
 }
 export function createSession(level: number): Session {
-  const state = spawn(spawn({ tiles: [], score: 0, moves: 0, random: getLevel(level).seed, nextId: 1, status: "playing" }))
-  return { ...state, level, configVersion: 1, undoUsed: false, previous: null }
+  const config = getLevel(level)
+  const state = spawn(spawn({ tiles: [], score: 0, moves: 0, random: config.seed, nextId: 1, status: "playing" }))
+  return { ...state, level, configVersion: config.version, undoUsed: false, previous: null }
 }
 function linePositions(line: number, direction: Direction) {
   return Array.from({ length: 4 }, (_, offset) => {

@@ -14,6 +14,7 @@ import { ResultDialog } from "@/components/game/result-dialog"
 import { TargetProgress } from "@/components/game/target-progress"
 import { MoveFeedback } from "@/components/game/move-feedback"
 import { getLevel, levels } from "@/game/levels"
+import { getLevelType } from "@/game/level-types"
 import { useGameStore } from "@/stores/use-game-store"
 import { useGameInput } from "@/hooks/use-game-input"
 
@@ -21,6 +22,7 @@ export function GamePage() {
   const store = useGameStore(), navigate = useNavigate()
   const { session } = store.data
   const level = getLevel(session.level)
+  const levelType = getLevelType(level.type)
   const [result, setResult] = useState(session.status !== "playing")
   const [restart, setRestart] = useState(false)
   const [settings, setSettings] = useState(false)
@@ -36,7 +38,7 @@ export function GamePage() {
       <span className="text-sm font-bold tracking-tight">doubleup<span className="text-[#a95233]">.</span></span>
       <SettingsDialog onOpenChange={setSettings} />
     </header>
-    <div className="mt-7 flex items-center justify-between text-xs text-muted-foreground"><span className="flex items-center gap-1.5"><span className="size-1.5 rounded-full bg-[#579478]" />第一章 · 初识数字</span><span className="tabular-nums">{String(session.level).padStart(2, "0")} / {String(levels.length).padStart(2, "0")}</span></div>
+    <div className="mt-7 flex items-center justify-between text-xs text-muted-foreground"><span className="flex items-center gap-1.5"><span className="size-1.5 rounded-full bg-[#579478]" />初识数字 · {levelType.label}</span><span className="tabular-nums">{String(session.level).padStart(2, "0")} / {String(levels.length).padStart(2, "0")}</span></div>
     <Progress className="mt-3 h-1" value={(session.level - 1 + (store.data.records[String(session.level)] ? 1 : 0)) / levels.length * 100} aria-label={`当前第 ${session.level} 关`} />
     <section className="mt-7 text-center">
       <p className="text-xs tracking-[.16em] text-muted-foreground">LEVEL {String(session.level).padStart(2, "0")} · {level.title}</p>
