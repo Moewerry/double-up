@@ -1,5 +1,8 @@
 import { getLevel } from "./levels"
+import { getStatus, remainingMoves } from "./rules"
 import type { Direction, Motion, Session, Snapshot, Tile } from "./types"
+
+export { canMove } from "./rules"
 
 function random(state: number): [number, number] {
   let value = state | 0
@@ -28,13 +31,9 @@ function linePositions(line: number, direction: Direction) {
     return (3 - offset) * 4 + line
   })
 }
-export function canMove(tiles: Tile[]) {
-  if (tiles.length < 16) return true
-  const values = new Map(tiles.map(t => [t.position, t.value]))
-  return tiles.some(t => (t.position % 4 < 3 && values.get(t.position + 1) === t.value) || (t.position < 12 && values.get(t.position + 4) === t.value))
-}
 export function move(session: Session, direction: Direction): { session: Session; motions: Motion[]; gained: number } {
-  if (session.status !== "playing") return { session, motions: [], gained: 0 }
+  const config = getLevel(session.level)
+  if (session.status !== "playing" || remainingMoves(session.moves, config.maxMoves) === 0) return { session, motions: [], gained: 0 }
   const tiles: Tile[] = [], motions: Motion[] = []
   let score = session.score, nextId = session.nextId
   for (let line = 0; line < 4; line++) {
@@ -57,10 +56,10 @@ export function move(session: Session, direction: Direction): { session: Session
   if (tiles.length === session.tiles.length && motions.every(m => m.tile.position === m.destination)) return { session, motions: [], gained: 0 }
   const { level: _level, configVersion: _version, undoUsed: _undo, previous: _previous, ...previous } = session
   const next = spawn({ tiles, score, moves: session.moves + 1, random: session.random, nextId, status: "playing" })
-  next.status = Math.max(...next.tiles.map(t => t.value)) >= getLevel(session.level).target ? "won" : canMove(next.tiles) ? "playing" : "lost"
-  return { session: { ...next, level: session.level, configVersion: 1, undoUsed: session.undoUsed, previous }, motions, gained: score - session.score }
+  next.status = getStatus(next, config)
+  return { session: { ...next, level: session.level, configVersion: config.version, undoUsed: session.undoUsed, previous }, motions, gained: score - session.score }
 }
 export function undo(session: Session): Session {
   if (session.undoUsed || !session.previous || session.status === "won") return session
-  return { ...session.previous, level: session.level, configVersion: 1, undoUsed: true, previous: null }
+  return { ...session.previous, level: session.level, configVersion: session.configVersion, undoUsed: true, previous: null }
 }

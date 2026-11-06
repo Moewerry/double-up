@@ -1,16 +1,18 @@
 export const levelTypes = [
   { id: "merge", label: "数字合并", description: "不限步数，通过合并达到本关目标。" },
   { id: "layout", label: "布局练习", description: "在固定开局中练习保留空位和摆放大数字。" },
+  { id: "moves", label: "限步挑战", description: "在规定的有效步数内合出目标数字。" },
 ] as const
 
 export type LevelType = typeof levelTypes[number]["id"]
 
 export interface LevelConfig {
   readonly id: number
-  readonly version: 1
+  readonly version: number
   readonly type: LevelType
   readonly title: string
   readonly target: number
+  readonly maxMoves?: number
   readonly seed: number
   readonly tip: string
 }

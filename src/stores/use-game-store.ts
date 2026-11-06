@@ -1,6 +1,7 @@
 import { create } from "zustand"
 import { createSession, move, undo } from "@/game/engine"
-import { levels } from "@/game/levels"
+import { getLevel, levels } from "@/game/levels"
+import { currentRecord } from "@/game/records"
 import type { ClearFeedback, Direction, Motion, Save } from "@/game/types"
 import { loadSave, persist } from "@/lib/storage"
 import type { SaveStatus } from "@/lib/storage"
@@ -39,9 +40,9 @@ export const useGameStore = create<GameStore>((set, get) => {
       const records = { ...state.data.records }
       let clearFeedback: ClearFeedback | null = null
       if (result.session.status === "won") {
-        const old = records[String(result.session.level)]
+        const old = currentRecord(records, getLevel(result.session.level))
         clearFeedback = { firstClear: !old, bestScore: !!old && result.session.score > old.score, fewestMoves: !!old && result.session.moves < old.moves }
-        records[String(result.session.level)] = { score: Math.max(old?.score ?? 0, result.session.score), moves: Math.min(old?.moves ?? Infinity, result.session.moves) }
+        records[String(result.session.level)] = { score: Math.max(old?.score ?? 0, result.session.score), moves: Math.min(old?.moves ?? Infinity, result.session.moves), ...(result.session.configVersion === 1 ? {} : { configVersion: result.session.configVersion }) }
       }
       commit({ ...state.data, session: result.session, records }, { motions: result.motions, revision: state.revision + 1, gained: result.gained, clearFeedback })
       return true

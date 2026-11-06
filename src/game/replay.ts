@@ -1,5 +1,6 @@
 import { createSession, move } from "./engine"
 import { levels } from "./levels"
+import { getStatus } from "./rules"
 import type { Direction, Session } from "./types"
 
 export interface LevelReplay {
@@ -8,6 +9,7 @@ export interface LevelReplay {
   configVersion: number
   seed: number
   target: number
+  maxMoves?: number
   directions: Direction[]
   expected: { score: number; moves: number; maximum: number; random: number; board: number[] }
 }
@@ -18,9 +20,9 @@ export function boardValues(session: Session): number[] {
 
 export function recordReplay(session: Session, directions: Direction[]): LevelReplay {
   const level = levels.find(level => level.id === session.level)
-  if (!level || session.status !== "won" || session.undoUsed) throw new Error("只能记录未使用撤销的通关路径。")
+  if (!level || session.status !== "won" || session.undoUsed || session.configVersion !== level.version || getStatus(session, level) !== "won" || level.maxMoves !== undefined && session.moves > level.maxMoves) throw new Error("只能记录符合当前配置且未使用撤销的通关路径。")
   return {
-    rules: 1, level: level.id, configVersion: session.configVersion, seed: level.seed, target: level.target,
+    rules: 1, level: level.id, configVersion: session.configVersion, seed: level.seed, target: level.target, maxMoves: level.maxMoves,
     directions: [...directions],
     expected: { score: session.score, moves: session.moves, maximum: Math.max(...session.tiles.map(tile => tile.value)), random: session.random, board: boardValues(session) },
   }
@@ -35,7 +37,7 @@ export function replaySolution(input: unknown): Session {
   const level = levels.find(level => level.id === input.level)
   if (!level) throw new Error("回放引用了不存在的关卡。")
   let session = createSession(level.id)
-  if (input.seed !== level.seed || input.target !== level.target || input.configVersion !== session.configVersion) throw new Error(`第 ${level.id} 关配置已变化，需要重新生成通关路径。`)
+  if (input.seed !== level.seed || input.target !== level.target || input.configVersion !== session.configVersion || input.maxMoves !== level.maxMoves) throw new Error(`第 ${level.id} 关配置已变化，需要重新生成通关路径。`)
   if (!Array.isArray(input.directions) || !input.directions.every(direction) || input.directions.length > 10000) throw new Error("回放方向序列不正确或超出步数限制。")
   const expected = input.expected
   if (!object(expected) || !integer(expected.score) || !integer(expected.moves) || !integer(expected.maximum) || !integer(expected.random)) throw new Error("回放预期成绩不正确。")

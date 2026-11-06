@@ -11,11 +11,11 @@ export interface Snapshot {
 }
 export interface Session extends Snapshot {
   level: number
-  configVersion: 1
+  configVersion: number
   undoUsed: boolean
   previous: Snapshot | null
 }
-export interface RecordEntry { score: number; moves: number }
+export interface RecordEntry { score: number; moves: number; configVersion?: number }
 export interface ClearFeedback { firstClear: boolean; bestScore: boolean; fewestMoves: boolean }
 export interface Save {
   version: 1

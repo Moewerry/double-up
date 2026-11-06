@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest"
 import { createSession, move, undo } from "@/game/engine"
+import { getLevel } from "@/game/levels"
 import type { Direction } from "@/game/types"
 import { decodeSave, emptySave, loadSave, persist } from "./storage"
 
@@ -65,5 +66,58 @@ describe("存档恢复", () => {
     expect(result.data.session.level).toBe(1)
     expect(result.saveStatus).toBe("ready")
     expect(result.notice).not.toBe("")
+  })
+})
+
+function fourthLevelSave() {
+  const save = emptySave()
+  save.records = { "1": { score: 32, moves: 12 }, "2": { score: 80, moves: 20 }, "3": { score: 200, moves: 35 } }
+  save.session = createSession(4)
+  return save
+}
+
+describe("限步存档兼容", () => {
+  it("可以恢复步数耗尽的失败局面，而不是将它当成损坏存档", () => {
+    const save = fourthLevelSave()
+    save.session.moves = getLevel(4).maxMoves!
+    save.session.status = "lost"
+    const restored = decodeSave(JSON.stringify(save))
+    expect(restored.notice).toBe("")
+    expect(restored.data.session).toEqual(save.session)
+  })
+
+  it("拒绝步数耗尽后仍声称进行中的局面，以及超过上限的局面", () => {
+    for (const extra of [0, 1]) {
+      const save = fourthLevelSave()
+      save.session.moves = getLevel(4).maxMoves! + extra
+      save.session.status = extra ? "lost" : "playing"
+      const restored = decodeSave(JSON.stringify(save))
+      expect(restored.notice).not.toBe("")
+      expect(restored.data.session).toEqual(createSession(4))
+      expect(restored.data.records).toEqual(save.records)
+    }
+  })
+
+  it("旧配置只重开当前受影响的关卡，保留已完成关卡与设置", () => {
+    const save = fourthLevelSave()
+    save.session.configVersion = 1
+    save.sound = true
+    const restored = decodeSave(JSON.stringify(save))
+    expect(restored.notice).not.toBe("")
+    expect(restored.data.session).toEqual(createSession(4))
+    expect(restored.data.records).toEqual(save.records)
+    expect(restored.data.sound).toBe(true)
+  })
+
+  it("最后一步通关后的新版本纪录和前一步快照可以完整恢复", () => {
+    const save = fourthLevelSave()
+    save.session.moves = getLevel(4).maxMoves! - 1
+    save.session.tiles = [{ id: 1, value: 32, position: 0 }, { id: 2, value: 32, position: 1 }]
+    save.session = move(save.session, "left").session
+    save.records["4"] = { score: save.session.score, moves: save.session.moves, configVersion: save.session.configVersion }
+    const restored = decodeSave(JSON.stringify(save))
+    expect(restored.notice).toBe("")
+    expect(restored.data).toEqual(save)
+    expect(restored.data.session.status).toBe("won")
   })
 })

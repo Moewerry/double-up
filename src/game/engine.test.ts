@@ -55,7 +55,7 @@ describe("移动与合并", () => {
 })
 
 describe("胜负与撤销", () => {
-  const almostFull = [2, 2, 8, 16, 8, 16, 32, 64, 16, 32, 64, 8, 32, 64, 8, 16]
+  const almostFull = [2, 2, 8, 16, 8, 16, 32, 8, 16, 32, 8, 16, 32, 8, 16, 32]
 
   it("有效移动后满盘且无可合并方块时失败，仍允许一次撤销", () => {
     const initial = fixture(almostFull)
@@ -69,7 +69,7 @@ describe("胜负与撤销", () => {
   })
 
   it("同一步达标且棋盘无路可走时优先判定通关", () => {
-    const initial = fixture([64, 64, ...almostFull.slice(2)])
+    const initial = fixture([32, 32, ...almostFull.slice(2)])
     const result = move(initial, "left").session
     expect(result.status).toBe("won")
     expect(canMove(result.tiles)).toBe(false)

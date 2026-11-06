@@ -1,5 +1,6 @@
-import { createSession, canMove } from "@/game/engine"
+import { createSession } from "@/game/engine"
 import { getLevel, levels } from "@/game/levels"
+import { getStatus } from "@/game/rules"
 import type { Save, Session, Snapshot } from "@/game/types"
 
 export const SAVE_KEY = "double-up:save:v1"
@@ -20,13 +21,13 @@ function validSnapshot(v: unknown): v is Snapshot {
   return true
 }
 function validSession(v: unknown, current: number): v is Session {
-  if (!validSnapshot(v) || !object(v) || v.configVersion !== 1 || !integer(v.level, 1) || typeof v.undoUsed !== "boolean") return false
+  if (!validSnapshot(v) || !object(v) || !integer(v.level, 1) || typeof v.undoUsed !== "boolean") return false
   if (v.level !== current && v.level !== current - 1) return false
   const level = getLevel(v.level)
+  if (v.configVersion !== level.version || level.maxMoves !== undefined && v.moves > level.maxMoves) return false
   if (v.previous !== null && (!validSnapshot(v.previous) || v.previous.status !== "playing" || v.previous.moves !== v.moves - 1 || v.previous.score > v.score)) return false
-  if (v.previous && (!canMove(v.previous.tiles) || v.previous.tiles.some(tile => tile.value >= level.target))) return false
-  const reached = Math.max(...v.tiles.map(t => t.value)) >= level.target
-  return v.status === "won" ? reached : !reached && (v.status === "playing" ? canMove(v.tiles) : !canMove(v.tiles))
+  if (v.previous && getStatus(v.previous, level) !== "playing") return false
+  return v.status === getStatus(v, level)
 }
 export function currentLevel(records: Save["records"]) {
   let id = 1
@@ -45,8 +46,8 @@ export function decodeSave(raw: string | null): LoadedSave {
     if (object(value.records)) {
       for (const level of levels) {
         const record = value.records[String(level.id)]
-        if (!object(record) || !integer(record.score) || !integer(record.moves, 1)) break
-        records[String(level.id)] = { score: record.score, moves: record.moves }
+        if (!object(record) || !integer(record.score) || !integer(record.moves, 1) || record.configVersion !== undefined && !integer(record.configVersion, 1)) break
+        records[String(level.id)] = { score: record.score, moves: record.moves, ...(record.configVersion === undefined ? {} : { configVersion: record.configVersion }) }
       }
     }
     const current = currentLevel(records)
