@@ -1,11 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useRef, useState } from "react"
 import type { Direction } from "@/game/types"
 import { useGameStore } from "@/stores/use-game-store"
 import { playSound } from "@/lib/audio"
 import { MOVE_DURATION } from "@/game/animation"
 import { useReducedMotion } from "./use-reduced-motion"
-
-const keys = new Map<string, Direction>([["arrowup", "up"], ["arrowdown", "down"], ["arrowleft", "left"], ["arrowright", "right"], ["w", "up"], ["s", "down"], ["a", "left"], ["d", "right"]])
+import { useDirectionalKeys } from "./use-directional-keys"
 
 export function useGameInput(enabled: boolean) {
   const [feedback, setFeedback] = useState("")
@@ -39,17 +38,6 @@ export function useGameInput(enabled: boolean) {
       if (queued) submitDirection(queued)
     }, MOVE_DURATION)
   }, [reduced])
-  useEffect(() => {
-    if (!enabled) clear()
-    const onKey = (event: KeyboardEvent) => {
-      if (!enabled || event.repeat || event.altKey || event.ctrlKey || event.metaKey) return
-      if (event.target instanceof Element && event.target.closest("button,a,input,textarea,select,[contenteditable=true],[role=switch],[role=dialog]")) return
-      const direction = keys.get(event.key.toLowerCase())
-      if (direction) { event.preventDefault(); submit(direction) }
-    }
-    window.addEventListener("keydown", onKey)
-    document.addEventListener("visibilitychange", clear)
-    return () => { window.removeEventListener("keydown", onKey); document.removeEventListener("visibilitychange", clear); clear() }
-  }, [enabled, submit, clear])
+  useDirectionalKeys(enabled, submit, clear)
   return { submit, clear, feedback }
 }

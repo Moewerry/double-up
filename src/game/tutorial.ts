@@ -14,14 +14,14 @@ export interface TutorialStep {
 }
 
 export const tutorialSteps: readonly TutorialStep[] = [
-  { id: "slide", prompt: "往左滑", success: "移动成功", kind: "move", direction: "left", tiles: [{ value: 2, position: 3 }, { value: 2, position: 11 }], highlight: [3, 11] },
+  { id: "slide", prompt: "往左滑", success: "新数字出现了", kind: "move", direction: "left", tiles: [{ value: 2, position: 3 }, { value: 2, position: 11 }], highlight: [3, 11] },
   { id: "merge", prompt: "让 2 碰在一起", success: "2 + 2 = 4", kind: "merge", direction: "left", tiles: [{ value: 2, position: 4 }, { value: 2, position: 7 }], highlight: [4, 7] },
   { id: "up", prompt: "试试向上", success: "2 + 2 = 4", kind: "merge", direction: "up", tiles: [{ value: 2, position: 0 }, { value: 2, position: 12 }], highlight: [0, 12] },
   { id: "right", prompt: "向右合并", success: "4 + 4 = 8", kind: "merge", direction: "right", tiles: [{ value: 4, position: 4 }, { value: 4, position: 7 }], highlight: [4, 7] },
   { id: "down", prompt: "再向下", success: "4 + 4 = 8", kind: "merge", direction: "down", tiles: [{ value: 4, position: 1 }, { value: 4, position: 13 }], highlight: [1, 13] },
   { id: "once", prompt: "每块只合一次", success: "先变成 4 + 4", kind: "single-merge", direction: "left", tiles: [{ value: 2, position: 0 }, { value: 2, position: 1 }, { value: 4, position: 2 }], highlight: [0, 1, 2] },
   { id: "again", prompt: "再滑一次", success: "这次变成 8", kind: "merge", direction: "left", carry: true, highlight: [0, 1] },
-  { id: "practice", prompt: "轮到你了", success: "学会了！", kind: "free", highlight: [] },
+  { id: "practice", prompt: "自己合出 16", success: "学会了！", kind: "free", highlight: [] },
 ]
 
 export interface TutorialState {
