@@ -1,7 +1,7 @@
 import { ArrowRight, Sparkles } from "lucide-react"
 
 export function MergeIllustration() {
-  return <div aria-hidden className="relative order-2 mx-auto my-12 flex h-44 w-full max-w-[340px] items-center justify-center gap-2 sm:gap-3 lg:order-none lg:my-0 lg:h-[360px] lg:max-w-[440px] lg:gap-4">
+  return <div aria-hidden className="relative order-2 mx-auto flex h-44 w-full max-w-[340px] items-center justify-center gap-2 sm:gap-3 lg:order-none lg:h-[360px] lg:max-w-[440px] lg:gap-4">
     <div className="absolute inset-x-4 inset-y-0 rounded-[50%] bg-[#ffeadb]/65 blur-xl" />
     <Sparkles className="absolute right-5 top-0 size-5 text-[#b27e53]" />
     <span className="absolute bottom-2 left-9 size-2 rounded-full bg-[#79cda8]" />
