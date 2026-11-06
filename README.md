@@ -42,6 +42,12 @@ localStorage 使用 `double-up:save:v1` 单键原子写入局面、撤销快照�
 
 需人工验证四向移动、一次合并规则、无效输入、撤销后相同方向复现、刷新恢复、顺序闯关、结算关闭后重新查看、多指手势、快速输入及 320–430px 手机布局。前 5 关需通过正式引擎回放与人工试玩验证后，才能作为正式关卡发布。
 
-纯静态部署，构建命令 `npm run build`，输出目录 `dist`。使用 HashRouter，无需额外配置页面路径回退。子路径托管时按实际公开地址配置 Vite `base`。
+自动部署使用 GitHub Pages。每次推送到 `main`，`.github/workflows/deploy-pages.yml` 会在 GitHub Actions 上安装依赖、构建并发布 `dist`；也可以在 Actions 页面手动运行该工作流。本地无需先构建，不提交 `dist`。
+
+- 发布地址：[DoubleUp](https://moewerry.github.io/double-up/)。
+- 部署进度与失败日志：[GitHub Actions](https://github.com/Moewerry/double-up/actions/workflows/deploy-pages.yml)。
+- 仓库 [Settings → Pages](https://github.com/Moewerry/double-up/settings/pages) 的 Source 使用 **GitHub Actions**。
+
+工作流使用 Node.js 24 和 `npm ci` 安装锁定依赖，再执行 `npm run build`。构建时从 Pages 读取站点子路径并传给 Vite `--base`，适配 `/double-up/`，本地开发仍使用默认根路径。使用 HashRouter，无需额外配置页面路径回退。构建成功后才会进入部署任务。
 
 通用组件来自 [shadcn/ui 官方注册表](https://ui.shadcn.com)，布局使用 Tailwind CSS 4。棋盘与数字方块是游戏专有展示组件。
