@@ -1,0 +1,55 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+:root {
+  --background: #fff9f2;
+  --foreground: #514a45;
+  --card: #ffffff;
+  --card-foreground: #514a45;
+  --popover: #fffdf9;
+  --popover-foreground: #514a45;
+  --primary: #ff9b71;
+  --primary-foreground: #512f20;
+  --secondary: #f3e6d9;
+  --secondary-foreground: #514a45;
+  --muted: #f3e6d9;
+  --muted-foreground: #70645c;
+  --accent: #ffeadb;
+  --accent-foreground: #514a45;
+  --destructive: #ab392f;
+  --border: #eadfd4;
+  --input: #b39b88;
+  --ring: #9b4429;
+  --radius: 1rem;
+}
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: .5rem;
+  --radius-md: .75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.25rem;
+}
+@layer base {
+  * { @apply border-border; }
+  body { @apply m-0 bg-background text-foreground antialiased; font-family: Inter, "Segoe UI", "Microsoft YaHei", sans-serif; }
+  button, a { -webkit-tap-highlight-color: transparent; }
+  button { cursor: pointer; }
+  ::selection { background: #ffdbbe; }
+}
