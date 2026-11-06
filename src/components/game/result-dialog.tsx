@@ -19,7 +19,7 @@ interface Props {
 export function ResultDialog({ session, open, onOpenChange, onNext, onRestart, onUndo, onHome, blocked, onRestoreFocus }: Props) {
   const won = session.status === "won", final = session.level === levels.length
   const canUndo = !session.undoUsed && !!session.previous && !won
-  return <Dialog open={open} onOpenChange={onOpenChange}><DialogContent className="max-w-[400px] rounded-[20px] text-center" onCloseAutoFocus={event => { event.preventDefault(); onRestoreFocus() }}>
+  return <Dialog open={open} onOpenChange={onOpenChange}><DialogContent className="max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-[400px] overflow-y-auto rounded-[20px] text-center sm:max-w-[400px]" onCloseAutoFocus={event => { event.preventDefault(); onRestoreFocus() }}>
     <div className="mx-auto mt-3 flex size-16 items-center justify-center rounded-2xl bg-[#ecf5e9] text-[#427355]">{won ? <Trophy className="size-8" /> : <RotateCcw className="size-8" />}</div>
     <DialogHeader className="text-center sm:text-center"><DialogTitle className="text-2xl font-bold">{won ? final ? "第一章，完成！" : "又向前了一点！" : "差一点，再试试"}</DialogTitle><DialogDescription className="leading-6">{won ? final ? "你已完成预览版的 5 关。后续章节仍在准备中。" : `成功合成 ${getLevel(session.level).target}，下一份惊喜就在前面。` : "没有可移动的位置了。整理思路，下一次会更好。"}</DialogDescription></DialogHeader>
     <div className="my-2 grid grid-cols-2 rounded-2xl bg-secondary/60 py-4"><div><p className="text-xs text-muted-foreground">本局得分</p><p className="mt-1 text-2xl font-bold tabular-nums">{session.score}</p></div><div><p className="text-xs text-muted-foreground">有效步数</p><p className="mt-1 text-2xl font-bold tabular-nums">{session.moves}</p></div></div>
