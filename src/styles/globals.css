@@ -64,7 +64,9 @@
   transition: transform 130ms ease-out;
 }
 .tile-arriving { animation: arrive 120ms ease-out; }
+.score-gain { animation: score-gain 750ms ease-out both; }
 @keyframes arrive { from { opacity: .2; filter: brightness(1.12); } to { opacity: 1; filter: brightness(1); } }
+@keyframes score-gain { 0% { opacity: 0; transform: translateY(6px); } 20% { opacity: 1; } 100% { opacity: 0; transform: translateY(-16px); } }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }

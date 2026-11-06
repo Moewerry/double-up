@@ -16,6 +16,7 @@ export interface Session extends Snapshot {
   previous: Snapshot | null
 }
 export interface RecordEntry { score: number; moves: number }
+export interface ClearFeedback { firstClear: boolean; bestScore: boolean; fewestMoves: boolean }
 export interface Save {
   version: 1
   rules: 1

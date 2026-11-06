@@ -1,7 +1,7 @@
 import { create } from "zustand"
 import { createSession, move, undo } from "@/game/engine"
 import { levels } from "@/game/levels"
-import type { Direction, Motion, Save } from "@/game/types"
+import type { ClearFeedback, Direction, Motion, Save } from "@/game/types"
 import { loadSave, persist } from "@/lib/storage"
 import type { SaveStatus } from "@/lib/storage"
 
@@ -14,6 +14,7 @@ interface GameStore {
   motions: Motion[]
   revision: number
   gained: number
+  clearFeedback: ClearFeedback | null
   move: (direction: Direction) => boolean
   undo: () => void
   restart: () => void
@@ -29,34 +30,36 @@ export const useGameStore = create<GameStore>((set, get) => {
     set({ data, saveStatus: saved ? "saved" : "unavailable", ...extra })
   }
   return {
-    ...initial, motions: [], revision: 0, gained: 0,
+    ...initial, motions: [], revision: 0, gained: 0, clearFeedback: null,
     move(direction) {
       const state = get()
       if (state.blocked) return false
       const result = move(state.data.session, direction)
       if (result.session === state.data.session) return false
       const records = { ...state.data.records }
+      let clearFeedback: ClearFeedback | null = null
       if (result.session.status === "won") {
         const old = records[String(result.session.level)]
+        clearFeedback = { firstClear: !old, bestScore: !!old && result.session.score > old.score, fewestMoves: !!old && result.session.moves < old.moves }
         records[String(result.session.level)] = { score: Math.max(old?.score ?? 0, result.session.score), moves: Math.min(old?.moves ?? Infinity, result.session.moves) }
       }
-      commit({ ...state.data, session: result.session, records }, { motions: result.motions, revision: state.revision + 1, gained: result.gained })
+      commit({ ...state.data, session: result.session, records }, { motions: result.motions, revision: state.revision + 1, gained: result.gained, clearFeedback })
       return true
     },
     undo() {
       const state = get()
       if (state.blocked) return
       const session = undo(state.data.session)
-      if (session !== state.data.session) commit({ ...state.data, session }, { motions: [], revision: state.revision + 1, gained: 0 })
+      if (session !== state.data.session) commit({ ...state.data, session }, { motions: [], revision: state.revision + 1, gained: 0, clearFeedback: null })
     },
     restart() {
       const state = get()
-      if (!state.blocked) commit({ ...state.data, session: createSession(state.data.session.level) }, { motions: [], revision: state.revision + 1, gained: 0 })
+      if (!state.blocked) commit({ ...state.data, session: createSession(state.data.session.level) }, { motions: [], revision: state.revision + 1, gained: 0, clearFeedback: null })
     },
     next() {
       const state = get(), session = state.data.session
       if (state.blocked || session.status !== "won" || session.level >= levels.length) return
-      commit({ ...state.data, session: createSession(session.level + 1) }, { motions: [], revision: state.revision + 1, gained: 0 })
+      commit({ ...state.data, session: createSession(session.level + 1) }, { motions: [], revision: state.revision + 1, gained: 0, clearFeedback: null })
     },
     toggle(key) {
       const state = get()
