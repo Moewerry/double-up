@@ -15,13 +15,21 @@ export interface TutorialStep {
 }
 
 export const tutorialSteps: readonly TutorialStep[] = [
-  { id: "slide", prompt: "往左滑", success: "新数字出现了", kind: "move", direction: "left", tiles: [{ value: 2, position: 3 }, { value: 2, position: 11 }], highlight: [3, 11] },
+  { id: "slide", prompt: "往左滑", success: "新数字出现了", kind: "move", direction: "left", tiles: [{ value: 2, position: 3 }, { value: 2, position: 11 }], highlight: [] },
   { id: "merge", prompt: "让 2 碰在一起", success: "2 + 2 = 4", kind: "merge", direction: "left", tiles: [{ value: 2, position: 4 }, { value: 2, position: 7 }], highlight: [4, 7] },
   { id: "up", prompt: "试试向上", success: "2 + 2 = 4", kind: "merge", direction: "up", tiles: [{ value: 2, position: 0 }, { value: 2, position: 12 }], highlight: [0, 12] },
   { id: "right", prompt: "向右合并", success: "4 + 4 = 8", kind: "merge", direction: "right", tiles: [{ value: 4, position: 4 }, { value: 4, position: 7 }], highlight: [4, 7] },
   { id: "down", prompt: "再向下", success: "4 + 4 = 8", kind: "merge", direction: "down", tiles: [{ value: 4, position: 1 }, { value: 4, position: 13 }], highlight: [1, 13] },
   { id: "once", prompt: "每块只合一次", success: "先变成 4 + 4", kind: "single-merge", direction: "left", tiles: [{ value: 2, position: 0 }, { value: 2, position: 1 }, { value: 4, position: 2 }], highlight: [0, 1, 2] },
   { id: "again", prompt: "再滑一次", success: "这次变成 8", kind: "merge", direction: "left", carry: true, highlight: [0, 1] },
+  { id: "different", prompt: "让不同数字靠在一起", success: "2 和 4 只会靠拢", kind: "move", direction: "left", tiles: [{ value: 2, position: 5 }, { value: 4, position: 7 }], highlight: [5, 7] },
+  { id: "gap", prompt: "隔着空格也能合并", success: "两个 2 滑到一起变成 4", kind: "merge", direction: "up", tiles: [{ value: 2, position: 2 }, { value: 2, position: 14 }], highlight: [2, 14] },
+  { id: "four", prompt: "把一排四个 2 向右滑", success: "四个 2 两两合成两个 4", kind: "merge", direction: "right", tiles: [{ value: 2, position: 4 }, { value: 2, position: 5 }, { value: 2, position: 6 }, { value: 2, position: 7 }], highlight: [4, 5, 6, 7] },
+  { id: "rows", prompt: "让两行同时向左合并", success: "一滑同时合出 4 和 8", kind: "merge", direction: "left", tiles: [{ value: 2, position: 5 }, { value: 2, position: 7 }, { value: 4, position: 13 }, { value: 4, position: 15 }], highlight: [5, 7, 13, 15] },
+  { id: "columns", prompt: "让两列同时向下合并", success: "两列各自完成合并", kind: "merge", direction: "down", tiles: [{ value: 2, position: 0 }, { value: 2, position: 8 }, { value: 4, position: 3 }, { value: 4, position: 11 }], highlight: [0, 8, 3, 11] },
+  { id: "line-up", prompt: "向上把两个 4 排到同一行", success: "现在两个 4 在最上面一行", kind: "move", direction: "up", tiles: [{ value: 4, position: 8 }, { value: 4, position: 13 }], highlight: [8, 13] },
+  { id: "merge-row", prompt: "换方向，向左合出 8", success: "先对齐，再合并", kind: "merge", direction: "left", carry: true, highlight: [0, 1] },
+  { id: "target", prompt: "向下把两个 8 合成 16", success: "合出本关目标 16 了", kind: "merge", direction: "down", tiles: [{ value: 8, position: 1 }, { value: 8, position: 9 }], highlight: [1, 9] },
   { id: "practice", prompt: "自己合出 16", success: "学会了！", kind: "free", highlight: [] },
 ]
 

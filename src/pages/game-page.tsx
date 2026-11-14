@@ -11,7 +11,6 @@ import { ScorePanel } from "@/components/game/score-panel"
 import { RestartDialog } from "@/components/game/restart-dialog"
 import { MoveFeedback } from "@/components/game/move-feedback"
 import { getLevel } from "@/game/levels"
-import { currentRecord } from "@/game/records"
 import { useGameStore } from "@/stores/use-game-store"
 import { useGameInput } from "@/hooks/use-game-input"
 
@@ -19,7 +18,6 @@ export function GamePage() {
   const store = useGameStore(), navigate = useNavigate()
   const { session } = store.data
   const level = getLevel(session.level)
-  const record = currentRecord(store.data.records, level)
   const [result, setResult] = useState(session.status !== "playing")
   const [restart, setRestart] = useState(false)
   const [settings, setSettings] = useState(false)
@@ -39,7 +37,7 @@ export function GamePage() {
         <SettingsDialog onOpenChange={setSettings} onRestart={() => { clear(); setRestart(true) }} />
       </div>
     </header>}
-      summary={<ScorePanel score={session.score} moves={session.moves} best={record?.score ?? 0} gained={store.gained} revision={store.revision} status={session.status} maxMoves={level.maxMoves} />}
+      summary={<ScorePanel score={session.score} moves={session.moves} gained={store.gained} revision={store.revision} status={session.status} maxMoves={level.maxMoves} />}
       actions={session.status !== "playing" ? <Button ref={resultButton} className="h-11 w-full" onClick={() => setResult(true)}><Flag />查看{session.status === "won" ? "通关" : "挑战"}结果</Button> : null}>
       <Board session={session} motions={store.motions} revision={store.revision} onMove={submit} enabled={enabled} />
       <p id="board-help" className="sr-only">使用方向键或 WASD 移动方块。触屏可以在棋盘上滑动。{level.maxMoves !== undefined && `本关限 ${level.maxMoves} 次有效移动。`}</p>

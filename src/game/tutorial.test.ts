@@ -6,10 +6,12 @@ afterEach(() => vi.unstubAllGlobals())
 
 function completeGuidedSteps() {
   let state = createTutorial()
-  while (tutorialSteps[state.step].direction) {
-    state = moveTutorial(state, tutorialSteps[state.step].direction!)
-    expect(state.phase).toBe("passed")
-    state = nextTutorialStep(state)
+  for (const lesson of tutorialSteps.slice(0, -1)) {
+    expect(nextTutorialStep(state)).toBe(state)
+    const passed = moveTutorial(state, lesson.direction!)
+    expect(passed.phase).toBe("passed")
+    state = nextTutorialStep(passed)
+    expect(state.step).toBe(passed.step + 1)
   }
   return state
 }
@@ -25,9 +27,10 @@ describe("交互教程", () => {
     expect(wrong.hint).toBe(1)
   })
 
-  it("前七步必须真实移动或合并，最后进入正式第一关初始局面", () => {
+  it("前十五步必须真实移动或合并，第十六步进入自由练习", () => {
     const state = completeGuidedSteps()
-    expect(state.step).toBe(7)
+    expect(tutorialSteps).toHaveLength(16)
+    expect(state.step).toBe(15)
     expect(state.session).toEqual(createSession(1, state.session.seed))
     expect(tutorialComplete(state)).toBe(false)
   })

@@ -38,7 +38,7 @@ export function currentLevel(records: Save["records"]) {
   while (id < levels.length && records[String(id)]) id++
   return id
 }
-export function emptySave(): Save { return { version: 1, rules: 1, session: createSession(1), records: {}, sound: false, directions: false } }
+export function emptySave(): Save { return { version: 1, rules: 1, session: createSession(1), records: {}, sound: false, music: false, directions: false } }
 export function decodeSave(raw: string | null): LoadedSave {
   try {
     if (raw === null) return { data: emptySave(), notice: "", blocked: false, saveStatus: "ready" }
@@ -60,7 +60,7 @@ export function decodeSave(raw: string | null): LoadedSave {
       session = { ...stored, seed: stored.seed ?? getLevel(stored.level).seed }
     }
     return {
-      data: { version: 1, rules: 1, records, sound: value.sound === true, directions: value.directions === true, session: session ?? createSession(current) },
+      data: { version: 1, rules: 1, records, sound: value.sound === true, music: value.music === true, directions: value.directions === true, session: session ?? createSession(current) },
       notice: session ? "" : "当前局面无法恢复或配置已更新，已准备本关新局，历史通关记录保留。",
       blocked: false,
       saveStatus: session ? "saved" : "ready",

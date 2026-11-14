@@ -1,21 +1,15 @@
-let context: AudioContext | undefined
-export function playSound(status: string) {
-  try {
-    context ??= new AudioContext()
-    const active = context
-    void active.resume().then(() => {
-      const notes = status === "won" ? [523, 659, 784] : status === "lost" ? [220, 165] : [392]
-      notes.forEach((frequency, i) => {
-        const oscillator = active.createOscillator(), gain = active.createGain()
-        const start = active.currentTime + i * .09
-        oscillator.type = "sine"
-        oscillator.frequency.value = frequency
-        gain.gain.setValueAtTime(.0001, start)
-        gain.gain.exponentialRampToValueAtTime(.035, start + .01)
-        gain.gain.exponentialRampToValueAtTime(.0001, start + .13)
-        oscillator.connect(gain); gain.connect(active.destination)
-        oscillator.start(start); oscillator.stop(start + .15)
-      })
-    }).catch(() => {})
-  } catch { /* 不支持音频时保持静音。 */ }
+/// <reference types="vite/client" />
+import type { Status } from "@/game/types"
+
+type Effect = Status | "slide" | "merge"
+const players: Partial<Record<Effect, HTMLAudioElement>> = {}
+
+export function playSound(status: Status, gained: number) {
+  if (document.hidden) return
+
+  const effect = status === "playing" ? (gained > 0 ? "merge" : "slide") : status
+  const player = players[effect] ??= new Audio(`${import.meta.env.BASE_URL}audio/${effect}.flac`)
+  if (!player.paused) return
+  if (player.ended) player.currentTime = 0
+  void player.play().catch(() => {})
 }

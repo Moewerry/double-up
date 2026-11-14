@@ -34,7 +34,7 @@ export function useTutorial(enabled: boolean) {
     const next = moveTutorial(previous, direction)
     publish(next)
     if (next.revision === previous.revision) return
-    if (useGameStore.getState().data.sound && (next.gained > 0 || next.session.status !== "playing")) playSound(next.session.status)
+    if (useGameStore.getState().data.sound) playSound(next.session.status, next.gained)
     if (reduced) return
     setBusy(true)
     timer.current = setTimeout(() => {

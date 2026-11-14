@@ -24,6 +24,7 @@ export interface Save {
   session: Session
   records: Record<string, RecordEntry>
   sound: boolean
+  music: boolean
   directions: boolean
 }
 export interface Motion { tile: Tile; destination: number; merged: boolean }

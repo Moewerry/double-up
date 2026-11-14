@@ -21,7 +21,7 @@ interface GameStore {
   undo: () => void
   restart: () => void
   next: () => void
-  toggle: (key: "sound" | "directions") => void
+  toggle: (key: "sound" | "music" | "directions") => void
   externalChange: () => void
   retrySave: () => void
   dismissNotice: () => void

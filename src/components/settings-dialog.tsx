@@ -1,5 +1,5 @@
 import { useRef, useState } from "react"
-import { Settings2, Volume2, RotateCcw } from "lucide-react"
+import { Music, Settings2, Volume2, RotateCcw } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Switch } from "@/components/ui/switch"
@@ -18,8 +18,9 @@ export function SettingsDialog({ onOpenChange, onRestart }: Props) {
       if (openingRestart.current) { event.preventDefault(); openingRestart.current = false; return }
       if (onRestart) { event.preventDefault(); document.getElementById("double-up-board")?.focus({ preventScroll: true }) }
     }}>
-      <DialogHeader><DialogTitle>设置</DialogTitle><DialogDescription className="sr-only">{onRestart ? "调整音效或重新开始本关。" : "调整游戏设置。"}</DialogDescription></DialogHeader>
-      <label className="flex min-h-14 items-center justify-between gap-4"><span className="flex items-center gap-3"><Volume2 className="size-4" />合并音效</span><Switch className="relative before:absolute before:-inset-y-4 before:-inset-x-2" checked={data.sound} disabled={blocked} onCheckedChange={() => toggle("sound")} aria-label="合并音效" /></label>
+      <DialogHeader><DialogTitle>设置</DialogTitle><DialogDescription className="sr-only">{onRestart ? "调整背景音乐、游戏音效或重新开始本关。" : "调整游戏设置。"}</DialogDescription></DialogHeader>
+      <label className="flex min-h-14 items-center justify-between gap-4"><span className="flex items-center gap-3"><Music className="size-4" />背景音乐</span><Switch className="relative before:absolute before:-inset-y-4 before:-inset-x-2" checked={data.music} disabled={blocked} onCheckedChange={() => toggle("music")} aria-label="背景音乐" /></label>
+      <label className="flex min-h-14 items-center justify-between gap-4"><span className="flex items-center gap-3"><Volume2 className="size-4" />游戏音效</span><Switch className="relative before:absolute before:-inset-y-4 before:-inset-x-2" checked={data.sound} disabled={blocked} onCheckedChange={() => toggle("sound")} aria-label="游戏音效" /></label>
       {onRestart && <Button variant="outline" className="h-11 w-full" disabled={blocked} onClick={() => { openingRestart.current = true; changeOpen(false); onRestart() }}><RotateCcw />重新开始</Button>}
     </DialogContent>
   </Dialog>

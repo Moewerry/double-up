@@ -29,7 +29,7 @@ export function useGameInput(enabled: boolean) {
     }
     const next = useGameStore.getState()
     setFeedback(next.gained ? `本步合并 +${next.gained} 分` : "移动了一步，找找能合并的相同数字。")
-    if (next.data.sound && (next.gained > 0 || next.data.session.status !== "playing")) playSound(next.data.session.status)
+    if (next.data.sound) playSound(next.data.session.status, next.gained)
     if (reduced) return
     timer.current = setTimeout(() => {
       timer.current = null

@@ -3,12 +3,12 @@ import { remainingMoves } from "@/game/rules"
 import type { Status } from "@/game/types"
 import { cn } from "@/lib/utils"
 
-interface Props { score: number; moves: number; best: number; gained: number; revision: number; status: Status; maxMoves?: number }
+interface Props { score: number; moves: number; gained: number; revision: number; status: Status; maxMoves?: number }
 
-export function ScorePanel({ score, moves, best, gained, revision, status, maxMoves }: Props) {
+export function ScorePanel({ score, moves, gained, revision, status, maxMoves }: Props) {
   const remaining = remainingMoves(moves, maxMoves)
-  const values: [string, number | string][] = [["本局得分", score], [remaining === undefined ? "已走步数" : "剩余步数", remaining ?? moves], ["通关最高分", best || "—"]]
-  return <div className="grid grid-cols-3 gap-2.5 lg:grid-cols-1">{values.map(([label, value], index) => {
+  const values: [string, number][] = [["本局得分", score], [remaining === undefined ? "已走步数" : "剩余步数", remaining ?? moves]]
+  return <div className="grid grid-cols-2 gap-2.5 lg:grid-cols-1">{values.map(([label, value], index) => {
     const warning = index === 1 && remaining !== undefined && remaining <= 5 && status !== "won"
     return <Card key={label} className={cn("relative gap-0 rounded-2xl border-border/70 bg-white/75 py-0 shadow-none", warning && "border-[#d9996c] bg-[#fff0df]")}><CardContent className="px-2 py-3 text-center">
       <p className="text-[11px] text-muted-foreground">{label}</p>

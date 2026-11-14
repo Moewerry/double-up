@@ -45,6 +45,7 @@
   --radius-md: .75rem;
   --radius-lg: 1rem;
   --radius-xl: 1.25rem;
+  --font-numerals: "Nunito", ui-rounded, "Arial Rounded MT Bold", system-ui, sans-serif;
 }
 @layer base {
   * { @apply border-border; }
