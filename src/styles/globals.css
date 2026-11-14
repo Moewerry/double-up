@@ -67,16 +67,18 @@
 .score-gain { animation: score-gain 750ms ease-out both; }
 @keyframes arrive { from { opacity: .2; filter: brightness(1.12); } to { opacity: 1; filter: brightness(1); } }
 @keyframes score-gain { 0% { opacity: 0; transform: translateY(6px); } 20% { opacity: 1; } 100% { opacity: 0; transform: translateY(-16px); } }
-.tutorial-hand { transform: translate(-50%, -50%); }
-@media (prefers-reduced-motion: no-preference) {
-  .tutorial-hand { animation: tutorial-swipe 1.6s ease-in-out infinite; }
-  @keyframes tutorial-swipe {
-    0%, 100% { opacity: 0; transform: translate(calc(-50% + 32px), -50%); }
-    15% { opacity: 1; transform: translate(calc(-50% + 32px), -50%); }
-    70% { opacity: 1; transform: translate(calc(-50% - 32px), -50%); }
-    85% { opacity: 0; transform: translate(calc(-50% - 32px), -50%); }
-  }
+.tutorial-hand {
+  transform: translate(-50%, -50%);
+  animation: tutorial-swipe 1.6s ease-in-out infinite;
 }
-@media (prefers-reduced-motion: reduce) {
+@keyframes tutorial-swipe {
+  0%, 100% { opacity: 0; transform: translate(calc(-50% + 32px), -50%); }
+  15% { opacity: 1; transform: translate(calc(-50% + 32px), -50%); }
+  70% { opacity: 1; transform: translate(calc(-50% - 32px), -50%); }
+  85% { opacity: 0; transform: translate(calc(-50% - 32px), -50%); }
+}
+/* Keep this media query in sync with use-reduced-motion.ts. */
+@media (prefers-reduced-motion: reduce) and (not (any-pointer: coarse)) {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+  .tutorial-hand { animation: none; }
 }

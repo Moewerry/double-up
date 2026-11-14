@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from "react"
 
-const query = "(prefers-reduced-motion: reduce)"
+const query = "(prefers-reduced-motion: reduce) and (not (any-pointer: coarse))"
 function subscribe(listener: () => void) {
   const media = window.matchMedia(query)
   media.addEventListener("change", listener)
