@@ -23,7 +23,7 @@ export function ResultDialog({ session, open, onOpenChange, onNext, onRestart, o
   const exhausted = failureReason(session, level) === "moves"
   const missingNumbers = failureReason(session, level) === "numbers"
   return <Dialog open={open} onOpenChange={onOpenChange}><DialogContent className="max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-[400px] overflow-y-auto rounded-[20px] text-center sm:max-w-[400px]" onCloseAutoFocus={event => { event.preventDefault(); onRestoreFocus() }}>
-    <div className="mx-auto mt-3 flex size-16 items-center justify-center rounded-[1.4rem] border border-success/15 bg-success-soft text-success shadow-[inset_0_2px_0_#fffef580]">{won ? <Trophy className="size-8" /> : <RotateCcw className="size-8" />}</div>
+    <div className="mx-auto mt-3 flex size-16 items-center justify-center rounded-[1.4rem] border border-success/15 bg-success-soft text-success">{won ? <Trophy className="size-8" /> : <RotateCcw className="size-8" />}</div>
     <DialogHeader className="text-center sm:text-center">
       <DialogTitle className="text-2xl font-bold">{won ? final ? "第一章，完成！" : "又向前了一点！" : exhausted ? "步数用完了" : "差一点，再试试"}</DialogTitle>
       <DialogDescription className={canContinue ? "sr-only" : "leading-6"}>

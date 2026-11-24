@@ -14,7 +14,7 @@ export function BoardCells({ puzzle, state, target }: { puzzle?: PuzzleConfig; s
       const goal = puzzle?.goal.kind === "deliver" && puzzle.goal.position === position
       const label = wall ? "墙" : collapsed ? "已坍塌，无法经过" : door ? opened ? "已打开的门" : `需要 ${door.value} 的锁门` : goal ? `送入 ${target} 的终点` : fragile ? "离开后坍塌的地板" : ""
       return <div key={position} className={cn(
-        "game-cell relative flex items-center justify-center rounded-xl border border-border/60 bg-card/70",
+        "relative flex items-center justify-center rounded-xl border border-border/50 bg-cell",
         wall && "game-cell-wall border-wall-edge bg-wall",
         collapsed && "border-dashed border-foreground/30 bg-pit",
         fragile && !collapsed && "border-dashed border-warning-border bg-warning-soft",

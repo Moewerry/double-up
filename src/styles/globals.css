@@ -2,46 +2,52 @@
 @import "tw-animate-css";
 
 :root {
-  --background: #f6fffc;
-  --foreground: #365e59;
-  --card: #ffffff;
-  --card-foreground: #365e59;
-  --popover: #ffffff;
-  --popover-foreground: #365e59;
-  --primary: #ffb4aa;
-  --primary-foreground: #633f46;
-  --secondary: #e4f6ee;
-  --secondary-foreground: #365e59;
-  --muted: #eaf6f1;
-  --muted-foreground: #5b7972;
-  --accent: #e1f5ee;
-  --accent-foreground: #365e59;
+  --background: #f7f8f2;
+  --foreground: #293f35;
+  --card: #fffefa;
+  --card-foreground: #293f35;
+  --popover: #fffefa;
+  --popover-foreground: #293f35;
+  --primary: #346b50;
+  --primary-foreground: #ffffff;
+  --secondary: #e9eee2;
+  --secondary-foreground: #354b38;
+  --muted: #edf0e7;
+  --muted-foreground: #687561;
+  --accent: #e3eada;
+  --accent-foreground: #293f35;
   --destructive: #a14345;
-  --border: #d4e9e1;
-  --input: #b3d5ca;
-  --ring: #478c79;
-  --coral: #b34d60;
-  --coral-soft: #fff0ec;
-  --success: #467d60;
-  --success-soft: #def5e6;
+  --border: #dce2d3;
+  --input: #bac5af;
+  --ring: #346b50;
+  --coral: #a75b44;
+  --coral-soft: #f8e8df;
+  --success: #3f6d48;
+  --success-soft: #e3edda;
   --warning: #765a2f;
   --warning-soft: #faf0d2;
   --warning-border: #c9ae72;
-  --wall: #bcd9ce;
-  --wall-edge: #95bbad;
-  --pit: #7d9d94;
-  --door: #f8e9ba;
-  --tile-2: #dcf6e8;
-  --tile-4: #f4f5ce;
-  --tile-8: #cceeea;
-  --tile-16: #ffc6bd;
-  --tile-32: #ffaeb2;
-  --tile-64: #f68c91;
-  --tile-128: #f7e6bc;
-  --tile-256: #e5edc3;
-  --tile-512: #c8edcd;
-  --tile-1024: #b7e6d7;
-  --tile-2048: #bae6ee;
+  --wall: #aebba2;
+  --wall-edge: #91a17f;
+  --pit: #7c8874;
+  --door: #edddb6;
+  --board-surface: #e9ede1;
+  --cell-surface: #f2f4ed;
+  --tile-ink-green: #3f5938;
+  --tile-ink-warm: #705435;
+  --tile-ink-coral: #713c2b;
+  --tile-ink-deep: #512c24;
+  --tile-2: #e0e9d4;
+  --tile-4: #cbdcb6;
+  --tile-8: #eeddb9;
+  --tile-16: #efb49d;
+  --tile-32: #e9987f;
+  --tile-64: #d97f65;
+  --tile-128: #e7d39d;
+  --tile-256: #d9dca5;
+  --tile-512: #bcd2a7;
+  --tile-1024: #a9c9ae;
+  --tile-2048: #a3c6ba;
   --radius: 1rem;
 }
 @theme inline {
@@ -74,6 +80,7 @@
   --color-wall-edge: var(--wall-edge);
   --color-pit: var(--pit);
   --color-door: var(--door);
+  --color-cell: var(--cell-surface);
   --radius-sm: .5rem;
   --radius-md: .75rem;
   --radius-lg: 1rem;
@@ -86,10 +93,6 @@
     @apply m-0 bg-background text-foreground antialiased;
     min-height: 100svh;
     font-family: Inter, "Segoe UI", "Microsoft YaHei", sans-serif;
-    background-image:
-      radial-gradient(ellipse at 2% 0%, #c5f3dfb3, transparent 54%),
-      radial-gradient(ellipse at 100% 85%, #d2f3f0b3, transparent 52%),
-      radial-gradient(ellipse at 52% 45%, #ffffff, transparent 75%);
   }
   #root { min-height: 100svh; }
   button, a { -webkit-tap-highlight-color: transparent; }
@@ -100,16 +103,10 @@
 .game-board {
   --gap: clamp(6px, 2vw, 10px);
   --cell: calc((100% - 5 * var(--gap)) / 4);
-  background: linear-gradient(145deg, #ffffffed, #eefbf6f2);
-  box-shadow: 0 12px 32px #4c9c7a0d, inset 0 1px 0 #ffffff;
-}
-.game-cell {
-  background-image: linear-gradient(145deg, #ffffff66, transparent 65%);
-  box-shadow: inset 0 1px 2px #6caa8e12;
+  background: var(--board-surface);
 }
 .game-cell-wall {
-  background-image: linear-gradient(145deg, #f8fff12e, transparent 65%), repeating-linear-gradient(0deg, transparent 0 44%, #64876020 45% 47%, transparent 48% 100%);
-  box-shadow: inset 0 2px 0 #f7fff238, inset 0 -3px 0 #75916d38;
+  box-shadow: inset 0 -2px 0 var(--wall-edge);
 }
 .game-tile {
   width: var(--cell);
@@ -118,25 +115,7 @@
   left: var(--gap);
   transform: translate(calc(var(--x) * (100% + var(--gap))), calc(var(--y) * (100% + var(--gap))));
   transition: transform 130ms ease-out;
-  border: 1px solid #699f8a24;
-  background-image: radial-gradient(ellipse at 22% 10%, #ffffff75, transparent 74%);
-  --tile-shadow: inset 0 1px 0 #ffffffa6, 0 2px 4px #4e9b7910;
-  text-shadow: 0 1px 0 #ffffff59;
-}
-.hero-wash {
-  background: radial-gradient(ellipse at 35% 43%, #c3f3df80, transparent 65%), radial-gradient(ellipse at 80% 60%, #ffe5df66, transparent 60%);
-}
-.hero-tile {
-  border: 1px solid #ffffffbd;
-  background-image: radial-gradient(ellipse at 15% 5%, #ffffff94, transparent 80%);
-  box-shadow: inset 0 1px 0 #ffffffcc, 0 12px 24px #4e9b7914;
-}
-.hero-bubble {
-  position: absolute;
-  border: 1px solid #a2d3c266;
-  border-radius: 50%;
-  background: radial-gradient(circle at 27% 22%, #ffffff 0 6%, transparent 13%), linear-gradient(140deg, #ffffff80, transparent 54%, #ffd8d333);
-  box-shadow: inset 1px 1px 3px #ffffffcc;
+  --tile-shadow: 0 0 transparent;
 }
 .tile-arriving { animation: arrive 120ms ease-out; }
 .score-gain { animation: score-gain 750ms ease-out both; }

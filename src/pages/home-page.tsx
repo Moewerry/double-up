@@ -2,9 +2,9 @@ import { ArrowRight, GraduationCap } from "lucide-react"
 import { Link } from "react-router-dom"
 import { Brand } from "@/components/brand"
 import { SettingsDialog } from "@/components/settings-dialog"
-import { MergeIllustration } from "@/components/home/merge-illustration"
+import { GamePreview } from "@/components/home/game-preview"
 import { Button } from "@/components/ui/button"
-import { levels } from "@/game/levels"
+import { getLevel, levels } from "@/game/levels"
 import { currentRecord } from "@/game/records"
 import { useGameStore } from "@/stores/use-game-store"
 
@@ -13,8 +13,9 @@ export function HomePage() {
   const { session, records } = data
   const completed = levels.filter(level => currentRecord(records, level)).length
   const finished = completed === levels.length
+  const level = getLevel(session.level)
   const label = session.status === "won" ? finished ? "查看通关纪念" : "继续向上闯关" : session.status === "lost" ? `查看第 ${session.level} 关结果` : session.moves > 0 ? `继续第 ${session.level} 关` : completed ? `挑战第 ${session.level} 关` : "开始闯关"
-  return <div className="flex flex-1 flex-col">
+  return <div className="mx-auto flex w-full max-w-[720px] flex-1 flex-col">
     <header className="flex shrink-0 items-center justify-between">
       <Brand />
       <div className="flex items-center gap-1">
@@ -22,14 +23,15 @@ export function HomePage() {
         <SettingsDialog />
       </div>
     </header>
-    <section className="grid flex-1 grid-cols-1 grid-rows-[auto_minmax(11rem,1fr)_auto] items-center gap-y-5 pb-[clamp(1.5rem,5svh,3rem)] pt-[clamp(1.5rem,6svh,4rem)] text-center sm:gap-y-8 lg:grid-cols-2 lg:grid-rows-1 lg:gap-16 lg:py-12 lg:text-left">
-      <div className="contents lg:flex lg:min-w-0 lg:flex-col lg:items-start">
-        <h1 className="order-1 text-[clamp(2.1rem,9vw,3rem)] font-bold leading-[1.45] tracking-tight lg:text-[clamp(2.75rem,4.7vw,4rem)] lg:leading-[1.3]">一点点，<br />翻倍<span className="text-coral">向前</span>。</h1>
-        <Button className="order-3 h-14 w-full rounded-2xl text-base font-bold lg:mt-10 lg:max-w-[280px]" disabled={blocked} asChild={!blocked}>
-          {blocked ? <span>请先恢复存档</span> : <Link to="/play">{label}<ArrowRight className="ml-auto size-5" /></Link>}
-        </Button>
+    <section className="flex flex-1 flex-col items-center justify-center gap-6 py-10 text-center sm:gap-8 sm:py-12">
+      <div className="flex flex-col gap-2">
+        <h1 className="text-[clamp(1.75rem,5vw,2.25rem)] font-bold leading-snug tracking-tight">一点点，翻倍向前。</h1>
+        <p className="text-sm text-muted-foreground">第 {level.id} 关 · {level.title}</p>
       </div>
-      <MergeIllustration />
+      <GamePreview session={session} />
+      <Button size="lg" className="h-12 w-full max-w-[300px] rounded-xl" disabled={blocked} asChild={!blocked}>
+        {blocked ? <span>请先恢复存档</span> : <Link to="/play">{label}<ArrowRight data-icon="inline-end" className="ml-auto" /></Link>}
+      </Button>
     </section>
   </div>
 }

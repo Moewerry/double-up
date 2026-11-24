@@ -2,17 +2,17 @@ import type { CSSProperties } from "react"
 import { cn } from "@/lib/utils"
 
 const colors: Record<number, { background: string; foreground: string }> = {
-  2: { background: "var(--tile-2)", foreground: "#3d6c58" },
-  4: { background: "var(--tile-4)", foreground: "#657344" },
-  8: { background: "var(--tile-8)", foreground: "#396f70" },
-  16: { background: "var(--tile-16)", foreground: "#9c4c57" },
-  32: { background: "var(--tile-32)", foreground: "#85424f" },
-  64: { background: "var(--tile-64)", foreground: "#633742" },
-  128: { background: "var(--tile-128)", foreground: "#66522f" },
-  256: { background: "var(--tile-256)", foreground: "#565634" },
-  512: { background: "var(--tile-512)", foreground: "#355844" },
-  1024: { background: "var(--tile-1024)", foreground: "#31584b" },
-  2048: { background: "var(--tile-2048)", foreground: "#315958" },
+  2: { background: "var(--tile-2)", foreground: "var(--tile-ink-green)" },
+  4: { background: "var(--tile-4)", foreground: "var(--tile-ink-green)" },
+  8: { background: "var(--tile-8)", foreground: "var(--tile-ink-warm)" },
+  16: { background: "var(--tile-16)", foreground: "var(--tile-ink-coral)" },
+  32: { background: "var(--tile-32)", foreground: "var(--tile-ink-coral)" },
+  64: { background: "var(--tile-64)", foreground: "var(--tile-ink-deep)" },
+  128: { background: "var(--tile-128)", foreground: "var(--tile-ink-warm)" },
+  256: { background: "var(--tile-256)", foreground: "var(--tile-ink-green)" },
+  512: { background: "var(--tile-512)", foreground: "var(--tile-ink-green)" },
+  1024: { background: "var(--tile-1024)", foreground: "var(--tile-ink-green)" },
+  2048: { background: "var(--tile-2048)", foreground: "var(--tile-ink-green)" },
 }
 export function Tile({ value, position, hidden, arriving, ghost, highlighted }: { value: number; position: number; hidden?: boolean; arriving?: boolean; ghost?: boolean; highlighted?: boolean }) {
   const color = colors[value] ?? colors[2048]
