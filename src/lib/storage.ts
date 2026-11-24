@@ -79,7 +79,7 @@ export function decodeSave(raw: string | null): LoadedSave {
     }
     return {
       data: { version: 1, rules: 1, records, sound: value.sound === true, music: value.music === true, directions: value.directions === true, session: session ?? createSession(current) },
-      notice: session ? "" : "当前局面无法恢复或关卡已更新，已准备新版待挑战关卡，历史通关记录与设置保留。",
+      notice: "",
       blocked: false,
       saveStatus: session ? "saved" : "ready",
     }

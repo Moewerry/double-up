@@ -2,12 +2,12 @@ import type { CSSProperties } from "react"
 import { cn } from "@/lib/utils"
 
 const colors: Record<number, { background: string; foreground: string }> = {
-  2: { background: "var(--tile-2)", foreground: "#355844" },
-  4: { background: "var(--tile-4)", foreground: "#66572f" },
-  8: { background: "var(--tile-8)", foreground: "#734832" },
-  16: { background: "var(--tile-16)", foreground: "#673c31" },
-  32: { background: "var(--tile-32)", foreground: "#542e2c" },
-  64: { background: "var(--tile-64)", foreground: "#492a2b" },
+  2: { background: "var(--tile-2)", foreground: "#3d6c58" },
+  4: { background: "var(--tile-4)", foreground: "#657344" },
+  8: { background: "var(--tile-8)", foreground: "#396f70" },
+  16: { background: "var(--tile-16)", foreground: "#9c4c57" },
+  32: { background: "var(--tile-32)", foreground: "#85424f" },
+  64: { background: "var(--tile-64)", foreground: "#633742" },
   128: { background: "var(--tile-128)", foreground: "#66522f" },
   256: { background: "var(--tile-256)", foreground: "#565634" },
   512: { background: "var(--tile-512)", foreground: "#355844" },

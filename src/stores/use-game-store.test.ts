@@ -132,4 +132,33 @@ describe("进度与存档协调", () => {
     expect(store.getState().data.records).toEqual(records)
     expect(JSON.parse(setItem.mock.calls[0][1]).session).toEqual(restarted)
   })
+
+  it("确认清空后同时重置已保存数据、设置与临时状态，并解除存档阻塞", async () => {
+    const { store, setItem } = await setup()
+    const save = nearWin()
+    save.sound = true
+    save.music = true
+    save.directions = true
+    save.records = { "1": { score: 128, moves: 2 } }
+    store.setState({ data: save, blocked: true, notice: "存档已更新", gained: 16, revision: 7, motions: [{ tile: save.session.tiles[0], destination: 0, merged: true }], clearFeedback: { firstClear: true, bestScore: false, fewestMoves: false } })
+    expect(store.getState().clearData()).toBe(true)
+    const reset = store.getState()
+    expect(reset.data.records).toEqual({})
+    expect(reset.data).toMatchObject({ records: {}, sound: false, music: false, directions: false, session: { level: 1, moves: 0, score: 0, previous: null, undoUsed: false } })
+    expect(reset).toMatchObject({ blocked: false, notice: "", saveStatus: "saved", gained: 0, revision: 8, motions: [], clearFeedback: null })
+    expect(JSON.parse(setItem.mock.calls[0][1])).toEqual(reset.data)
+    expect(decodeSave(setItem.mock.calls[0][1]).data).toEqual(reset.data)
+  })
+
+  it("清空写入失败时保留已有进度，重试成功后再完成重置", async () => {
+    const { store, setItem } = await setup()
+    store.setState({ data: nearWin() })
+    const previous = store.getState()
+    setItem.mockImplementationOnce(() => { throw new Error("quota") })
+    expect(store.getState().clearData()).toBe(false)
+    expect(store.getState()).toBe(previous)
+    expect(store.getState().clearData()).toBe(true)
+    expect(store.getState().data.session.moves).toBe(0)
+    expect(store.getState().data.records).toEqual({})
+  })
 })

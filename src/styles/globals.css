@@ -2,46 +2,46 @@
 @import "tw-animate-css";
 
 :root {
-  --background: #eff8e9;
-  --foreground: #31594b;
-  --card: #fbfdf5;
-  --card-foreground: #31594b;
-  --popover: #fbfdf5;
-  --popover-foreground: #31594b;
-  --primary: #f4a18e;
-  --primary-foreground: #56372f;
-  --secondary: #dfefdd;
-  --secondary-foreground: #31594b;
-  --muted: #e5efdf;
-  --muted-foreground: #577363;
-  --accent: #e4f2dd;
-  --accent-foreground: #31594b;
+  --background: #f6fffc;
+  --foreground: #365e59;
+  --card: #ffffff;
+  --card-foreground: #365e59;
+  --popover: #ffffff;
+  --popover-foreground: #365e59;
+  --primary: #ffb4aa;
+  --primary-foreground: #633f46;
+  --secondary: #e4f6ee;
+  --secondary-foreground: #365e59;
+  --muted: #eaf6f1;
+  --muted-foreground: #5b7972;
+  --accent: #e1f5ee;
+  --accent-foreground: #365e59;
   --destructive: #a14345;
-  --border: #cedfc6;
-  --input: #a9c1ab;
-  --ring: #587e66;
-  --coral: #a14c40;
-  --coral-soft: #fbe3d5;
-  --success: #426b43;
-  --success-soft: #dfeecf;
+  --border: #d4e9e1;
+  --input: #b3d5ca;
+  --ring: #478c79;
+  --coral: #b34d60;
+  --coral-soft: #fff0ec;
+  --success: #467d60;
+  --success-soft: #def5e6;
   --warning: #765a2f;
   --warning-soft: #faf0d2;
   --warning-border: #c9ae72;
-  --wall: #b4cbb0;
-  --wall-edge: #91ad8e;
-  --pit: #78958a;
-  --door: #f6e2a9;
-  --tile-2: #dcecd2;
-  --tile-4: #f6edc4;
-  --tile-8: #f6c6a2;
-  --tile-16: #f5a08e;
-  --tile-32: #e98c7c;
-  --tile-64: #db786e;
-  --tile-128: #f0d5a1;
-  --tile-256: #e3dcad;
-  --tile-512: #c5dfb8;
-  --tile-1024: #afd6c0;
-  --tile-2048: #abd2cf;
+  --wall: #bcd9ce;
+  --wall-edge: #95bbad;
+  --pit: #7d9d94;
+  --door: #f8e9ba;
+  --tile-2: #dcf6e8;
+  --tile-4: #f4f5ce;
+  --tile-8: #cceeea;
+  --tile-16: #ffc6bd;
+  --tile-32: #ffaeb2;
+  --tile-64: #f68c91;
+  --tile-128: #f7e6bc;
+  --tile-256: #e5edc3;
+  --tile-512: #c8edcd;
+  --tile-1024: #b7e6d7;
+  --tile-2048: #bae6ee;
   --radius: 1rem;
 }
 @theme inline {
@@ -87,23 +87,11 @@
     min-height: 100svh;
     font-family: Inter, "Segoe UI", "Microsoft YaHei", sans-serif;
     background-image:
-      radial-gradient(ellipse at 8% 5%, #c8eed580, transparent 58%),
-      radial-gradient(ellipse at 91% 21%, #d4f3e780, transparent 55%),
-      radial-gradient(ellipse at 43% 54%, #fffce9d9, transparent 63%),
-      radial-gradient(ellipse at 84% 96%, #bce4cc99, transparent 58%);
+      radial-gradient(ellipse at 2% 0%, #c5f3dfb3, transparent 54%),
+      radial-gradient(ellipse at 100% 85%, #d2f3f0b3, transparent 52%),
+      radial-gradient(ellipse at 52% 45%, #ffffff, transparent 75%);
   }
-  body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    opacity: .2;
-    background-image: radial-gradient(#53795730 .5px, transparent .8px), radial-gradient(#fffef5 1px, transparent 1.4px);
-    background-position: 0 0, 2px 3px;
-    background-size: 5px 7px, 9px 11px;
-  }
-  #root { position: relative; z-index: 1; min-height: 100svh; }
+  #root { min-height: 100svh; }
   button, a { -webkit-tap-highlight-color: transparent; }
   button { cursor: pointer; }
   ::selection { background: var(--coral-soft); color: var(--primary-foreground); }
@@ -112,12 +100,12 @@
 .game-board {
   --gap: clamp(6px, 2vw, 10px);
   --cell: calc((100% - 5 * var(--gap)) / 4);
-  background: linear-gradient(145deg, #fcfdf3f2, #eaf4e2ed);
-  box-shadow: 0 14px 38px #52765b14, 0 3px 0 #b3cba745, inset 0 1px 0 #fffef9;
+  background: linear-gradient(145deg, #ffffffed, #eefbf6f2);
+  box-shadow: 0 12px 32px #4c9c7a0d, inset 0 1px 0 #ffffff;
 }
 .game-cell {
-  background-image: linear-gradient(145deg, #fffef733, transparent 65%);
-  box-shadow: inset 0 1px 2px #6d8b6220;
+  background-image: linear-gradient(145deg, #ffffff66, transparent 65%);
+  box-shadow: inset 0 1px 2px #6caa8e12;
 }
 .game-cell-wall {
   background-image: linear-gradient(145deg, #f8fff12e, transparent 65%), repeating-linear-gradient(0deg, transparent 0 44%, #64876020 45% 47%, transparent 48% 100%);
@@ -130,26 +118,25 @@
   left: var(--gap);
   transform: translate(calc(var(--x) * (100% + var(--gap))), calc(var(--y) * (100% + var(--gap))));
   transition: transform 130ms ease-out;
-  border: 1px solid #78965c26;
-  background-image: radial-gradient(ellipse at 22% 10%, #fffdf366, transparent 70%), linear-gradient(145deg, #fffef52e, #c79b6612);
-  --tile-shadow: inset 0 2px 0 #fffef56b, inset 0 -3px 0 #7a77551c, 0 2px 4px #5c7e5414;
-  text-shadow: 0 1px 0 #fffef540;
+  border: 1px solid #699f8a24;
+  background-image: radial-gradient(ellipse at 22% 10%, #ffffff75, transparent 74%);
+  --tile-shadow: inset 0 1px 0 #ffffffa6, 0 2px 4px #4e9b7910;
+  text-shadow: 0 1px 0 #ffffff59;
 }
 .hero-wash {
-  border-radius: 46% 54% 61% 39% / 48% 43% 57% 52%;
-  background: radial-gradient(ellipse at 35% 34%, #fffbe4cc, transparent 70%), radial-gradient(ellipse at 65% 67%, #a5d6bb80, transparent 72%);
+  background: radial-gradient(ellipse at 35% 43%, #c3f3df80, transparent 65%), radial-gradient(ellipse at 80% 60%, #ffe5df66, transparent 60%);
 }
 .hero-tile {
-  border: 1px solid #829d6b38;
-  background-image: radial-gradient(ellipse at 18% 10%, #fffef56b, transparent 80%), linear-gradient(135deg, #fffef52b, #b27a4d0a);
-  box-shadow: inset 0 2px 0 #fffef594, inset 0 -3px 0 #7a77551a, 0 14px 25px #4c805523;
+  border: 1px solid #ffffffbd;
+  background-image: radial-gradient(ellipse at 15% 5%, #ffffff94, transparent 80%);
+  box-shadow: inset 0 1px 0 #ffffffcc, 0 12px 24px #4e9b7914;
 }
 .hero-bubble {
   position: absolute;
-  border: 1px solid #91bba64d;
+  border: 1px solid #a2d3c266;
   border-radius: 50%;
-  background: radial-gradient(circle at 27% 22%, #fffff5cf 0 6%, transparent 13%), linear-gradient(140deg, #f8fff16b, transparent 54%, #f8d3bd52);
-  box-shadow: inset 1px 1px 3px #fffff5b3, inset -1px -2px 3px #91bba633;
+  background: radial-gradient(circle at 27% 22%, #ffffff 0 6%, transparent 13%), linear-gradient(140deg, #ffffff80, transparent 54%, #ffd8d333);
+  box-shadow: inset 1px 1px 3px #ffffffcc;
 }
 .tile-arriving { animation: arrive 120ms ease-out; }
 .score-gain { animation: score-gain 750ms ease-out both; }

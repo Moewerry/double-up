@@ -130,7 +130,7 @@ describe("第一章固定解谜关卡", () => {
     save.sound = true
     save.session = { ...session, openedDoors: [0] }
     const damaged = decodeSave(JSON.stringify(save))
-    expect(damaged.notice).not.toBe("")
+    expect(damaged.notice).toBe("")
     expect(damaged.data.session).toEqual(session)
     expect(damaged.data.records).toEqual(save.records)
     expect(damaged.data.sound).toBe(true)

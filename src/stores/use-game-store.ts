@@ -3,7 +3,7 @@ import { createSession, move, undo } from "@/game/engine"
 import { getLevel, levels } from "@/game/levels"
 import { currentRecord } from "@/game/records"
 import type { ClearFeedback, Direction, Motion, Save } from "@/game/types"
-import { loadSave, persist } from "@/lib/storage"
+import { emptySave, loadSave, persist } from "@/lib/storage"
 import type { SaveStatus } from "@/lib/storage"
 
 const initial = loadSave()
@@ -25,6 +25,7 @@ interface GameStore {
   externalChange: () => void
   retrySave: () => void
   dismissNotice: () => void
+  clearData: () => boolean
 }
 export const useGameStore = create<GameStore>((set, get) => {
   function commit(data: Save, extra: Partial<GameStore> = {}) {
@@ -77,6 +78,12 @@ export const useGameStore = create<GameStore>((set, get) => {
     },
     dismissNotice() {
       if (!get().blocked) set({ notice: "" })
+    },
+    clearData() {
+      const data = emptySave()
+      if (!persist(data)) return false
+      set({ data, notice: "", blocked: false, saveStatus: "saved", motions: [], revision: get().revision + 1, gained: 0, clearFeedback: null })
+      return true
     },
   }
 })

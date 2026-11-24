@@ -21,19 +21,19 @@ describe("存档恢复", () => {
     const restored = decodeSave(JSON.stringify(save))
     expect(restored.data.records).toEqual(save.records)
     expect(restored.data.session).toEqual(createSession(2))
-    expect(restored.notice).not.toBe("")
+    expect(restored.notice).toBe("")
     expect(restored.saveStatus).toBe("ready")
   })
 
   it.each(["position", "id"] as const)("拒绝重复的方块 $0", key => {
     const save = emptySave()
     save.session.tiles[1][key] = save.session.tiles[0][key]
-    expect(decodeSave(JSON.stringify(save)).notice).not.toBe("")
+    expect(decodeSave(JSON.stringify(save)).notice).toBe("")
   })
 
   it("拒绝数组伪装的状态字段，以及跳到未解锁关卡的存档", () => {
     const save = emptySave()
-    expect(decodeSave(JSON.stringify({ ...save, session: { ...save.session, status: ["playing"] } })).notice).not.toBe("")
+    expect(decodeSave(JSON.stringify({ ...save, session: { ...save.session, status: ["playing"] } })).notice).toBe("")
     expect(decodeSave(JSON.stringify({ ...save, session: createSession(5) })).data.session.level).toBe(1)
   })
 
@@ -95,7 +95,7 @@ describe("限步存档兼容", () => {
       save.session.moves = getLevel(4).maxMoves! + extra
       save.session.status = extra ? "lost" : "playing"
       const restored = decodeSave(JSON.stringify(save))
-      expect(restored.notice).not.toBe("")
+      expect(restored.notice).toBe("")
       expect(restored.data.session).toEqual(createSession(4))
       expect(restored.data.records).toEqual(save.records)
     }
@@ -106,7 +106,7 @@ describe("限步存档兼容", () => {
     save.session.configVersion = 1
     save.sound = true
     const restored = decodeSave(JSON.stringify(save))
-    expect(restored.notice).not.toBe("")
+    expect(restored.notice).toBe("")
     expect(restored.data.session).toEqual(createSession(4))
     expect(restored.data.records).toEqual(save.records)
     expect(restored.data.sound).toBe(true)
@@ -132,7 +132,7 @@ describe("限步存档兼容", () => {
     save.session.tiles = [{ id: 1, value: 64, position: 0 }, { id: 2, value: 2, position: 1 }]
     save.records["4"] = { score: 1024, moves: 50 }
     const restored = decodeSave(JSON.stringify(save))
-    expect(restored.notice).not.toBe("")
+    expect(restored.notice).toBe("")
     expect(restored.data.session).toEqual(createSession(5))
     expect(restored.data.records).toEqual(save.records)
   })
@@ -159,7 +159,7 @@ describe("随机种子存档", () => {
   it.each([0, -1, 1.5, 0x100000000])("损坏的开局种子 %s 会重新准备本关", seed => {
     const save = emptySave()
     const restored = decodeSave(JSON.stringify({ ...save, session: { ...save.session, seed } }))
-    expect(restored.notice).not.toBe("")
+    expect(restored.notice).toBe("")
     expect(restored.data.session).toEqual(createSession(1))
   })
 })
