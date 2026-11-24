@@ -1,5 +1,5 @@
 import { useRef, useState } from "react"
-import { Music, Settings2, Volume2, RotateCcw, Trash2 } from "lucide-react"
+import { Music, Settings, Settings2, Volume2, RotateCcw, Trash2 } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
@@ -7,9 +7,9 @@ import { Switch } from "@/components/ui/switch"
 import { useGameStore } from "@/stores/use-game-store"
 import { ClearDataDialog } from "@/components/clear-data-dialog"
 
-interface Props { onOpenChange?: (open: boolean) => void; onRestart?: () => void }
+interface Props { onOpenChange?: (open: boolean) => void; onRestart?: () => void; appearance?: "default" | "home" }
 
-export function SettingsDialog({ onOpenChange, onRestart }: Props) {
+export function SettingsDialog({ onOpenChange, onRestart, appearance = "default" }: Props) {
   const { data, toggle, blocked } = useGameStore()
   const [open, setOpen] = useState(false)
   const [clearing, setClearing] = useState(false)
@@ -17,7 +17,7 @@ export function SettingsDialog({ onOpenChange, onRestart }: Props) {
   const skipRestoreFocus = useRef(false)
   function changeOpen(value: boolean) { setOpen(value); onOpenChange?.(value) }
   return <Dialog open={open} onOpenChange={changeOpen}>
-    <DialogTrigger asChild><Button variant="ghost" size="icon" className="size-11 rounded-full" aria-label="游戏设置"><Settings2 /></Button></DialogTrigger>
+    <DialogTrigger asChild><Button variant={appearance === "home" ? "home-icon" : "ghost"} size="icon" className={appearance === "home" ? undefined : "size-11 rounded-full"} aria-label="游戏设置">{appearance === "home" ? <Settings /> : <Settings2 />}</Button></DialogTrigger>
     <DialogContent className="max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-[400px] overflow-y-auto rounded-[20px] sm:max-w-[400px]" onCloseAutoFocus={event => {
       if (skipRestoreFocus.current) { event.preventDefault(); skipRestoreFocus.current = false; return }
       if (onRestart) { event.preventDefault(); document.getElementById("double-up-board")?.focus({ preventScroll: true }) }

@@ -8,6 +8,8 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
+        "home-start": "home-start-button",
+        "home-icon": "home-icon-button",
         default: "bg-primary text-primary-foreground hover:bg-primary/90 active:translate-y-px active:bg-primary/85",
         destructive:
           "bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:bg-destructive/60 dark:focus-visible:ring-destructive/40",
