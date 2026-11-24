@@ -1,7 +1,9 @@
-import { describe, expect, it } from "vitest"
+import { describe, expect, it, vi } from "vitest"
 import { createSession } from "./engine"
 import { getLevel } from "./levels"
 import { recordReplay, replaySolution } from "./replay"
+
+vi.mock("./levels", () => import("./legacy-levels.fixture"))
 
 describe("正式配置通关回放的边界", () => {
   it("未通关或使用过撤销的局面不能导出成通关记录", () => {

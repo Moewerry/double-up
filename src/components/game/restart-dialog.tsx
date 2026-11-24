@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 
 interface Props { open: boolean; onOpenChange: (open: boolean) => void; onRestart: () => void; blocked: boolean; title?: string; description?: string }
 
-export function RestartDialog({ open, onOpenChange, onRestart, blocked, title = "从这一关重新开始？", description = "本局分数和步数将重置，已有通关记录会保留。" }: Props) {
+export function RestartDialog({ open, onOpenChange, onRestart, blocked, title = "从这一关重新开始？", description = "恢复本关初始布局，打开的门与坍塌的地板也会复原，已有通关记录会保留。" }: Props) {
   return <Dialog open={open} onOpenChange={onOpenChange}>
     <DialogContent className="max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-[400px] overflow-y-auto rounded-[20px] sm:max-w-[400px]" onCloseAutoFocus={event => { event.preventDefault(); document.getElementById("double-up-board")?.focus({ preventScroll: true }) }}>
       <DialogHeader><DialogTitle>{title}</DialogTitle><DialogDescription>{description}</DialogDescription></DialogHeader>

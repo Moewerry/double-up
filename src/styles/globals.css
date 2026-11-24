@@ -2,24 +2,46 @@
 @import "tw-animate-css";
 
 :root {
-  --background: #fff9f2;
-  --foreground: #514a45;
-  --card: #ffffff;
-  --card-foreground: #514a45;
-  --popover: #fffdf9;
-  --popover-foreground: #514a45;
-  --primary: #ff9b71;
-  --primary-foreground: #512f20;
-  --secondary: #f3e6d9;
-  --secondary-foreground: #514a45;
-  --muted: #f3e6d9;
-  --muted-foreground: #70645c;
-  --accent: #ffeadb;
-  --accent-foreground: #514a45;
-  --destructive: #ab392f;
-  --border: #eadfd4;
-  --input: #b39b88;
-  --ring: #9b4429;
+  --background: #eff8e9;
+  --foreground: #31594b;
+  --card: #fbfdf5;
+  --card-foreground: #31594b;
+  --popover: #fbfdf5;
+  --popover-foreground: #31594b;
+  --primary: #f4a18e;
+  --primary-foreground: #56372f;
+  --secondary: #dfefdd;
+  --secondary-foreground: #31594b;
+  --muted: #e5efdf;
+  --muted-foreground: #577363;
+  --accent: #e4f2dd;
+  --accent-foreground: #31594b;
+  --destructive: #a14345;
+  --border: #cedfc6;
+  --input: #a9c1ab;
+  --ring: #587e66;
+  --coral: #a14c40;
+  --coral-soft: #fbe3d5;
+  --success: #426b43;
+  --success-soft: #dfeecf;
+  --warning: #765a2f;
+  --warning-soft: #faf0d2;
+  --warning-border: #c9ae72;
+  --wall: #b4cbb0;
+  --wall-edge: #91ad8e;
+  --pit: #78958a;
+  --door: #f6e2a9;
+  --tile-2: #dcecd2;
+  --tile-4: #f6edc4;
+  --tile-8: #f6c6a2;
+  --tile-16: #f5a08e;
+  --tile-32: #e98c7c;
+  --tile-64: #db786e;
+  --tile-128: #f0d5a1;
+  --tile-256: #e3dcad;
+  --tile-512: #c5dfb8;
+  --tile-1024: #afd6c0;
+  --tile-2048: #abd2cf;
   --radius: 1rem;
 }
 @theme inline {
@@ -41,6 +63,17 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-coral: var(--coral);
+  --color-coral-soft: var(--coral-soft);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-warning-border: var(--warning-border);
+  --color-wall: var(--wall);
+  --color-wall-edge: var(--wall-edge);
+  --color-pit: var(--pit);
+  --color-door: var(--door);
   --radius-sm: .5rem;
   --radius-md: .75rem;
   --radius-lg: 1rem;
@@ -49,13 +82,47 @@
 }
 @layer base {
   * { @apply border-border; }
-  body { @apply m-0 bg-background text-foreground antialiased; font-family: Inter, "Segoe UI", "Microsoft YaHei", sans-serif; }
+  body {
+    @apply m-0 bg-background text-foreground antialiased;
+    min-height: 100svh;
+    font-family: Inter, "Segoe UI", "Microsoft YaHei", sans-serif;
+    background-image:
+      radial-gradient(ellipse at 8% 5%, #c8eed580, transparent 58%),
+      radial-gradient(ellipse at 91% 21%, #d4f3e780, transparent 55%),
+      radial-gradient(ellipse at 43% 54%, #fffce9d9, transparent 63%),
+      radial-gradient(ellipse at 84% 96%, #bce4cc99, transparent 58%);
+  }
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: .2;
+    background-image: radial-gradient(#53795730 .5px, transparent .8px), radial-gradient(#fffef5 1px, transparent 1.4px);
+    background-position: 0 0, 2px 3px;
+    background-size: 5px 7px, 9px 11px;
+  }
+  #root { position: relative; z-index: 1; min-height: 100svh; }
   button, a { -webkit-tap-highlight-color: transparent; }
   button { cursor: pointer; }
-  ::selection { background: #ffdbbe; }
+  ::selection { background: var(--coral-soft); color: var(--primary-foreground); }
 }
 
-.game-board { --gap: clamp(6px, 2vw, 10px); --cell: calc((100% - 5 * var(--gap)) / 4); }
+.game-board {
+  --gap: clamp(6px, 2vw, 10px);
+  --cell: calc((100% - 5 * var(--gap)) / 4);
+  background: linear-gradient(145deg, #fcfdf3f2, #eaf4e2ed);
+  box-shadow: 0 14px 38px #52765b14, 0 3px 0 #b3cba745, inset 0 1px 0 #fffef9;
+}
+.game-cell {
+  background-image: linear-gradient(145deg, #fffef733, transparent 65%);
+  box-shadow: inset 0 1px 2px #6d8b6220;
+}
+.game-cell-wall {
+  background-image: linear-gradient(145deg, #f8fff12e, transparent 65%), repeating-linear-gradient(0deg, transparent 0 44%, #64876020 45% 47%, transparent 48% 100%);
+  box-shadow: inset 0 2px 0 #f7fff238, inset 0 -3px 0 #75916d38;
+}
 .game-tile {
   width: var(--cell);
   height: var(--cell);
@@ -63,6 +130,26 @@
   left: var(--gap);
   transform: translate(calc(var(--x) * (100% + var(--gap))), calc(var(--y) * (100% + var(--gap))));
   transition: transform 130ms ease-out;
+  border: 1px solid #78965c26;
+  background-image: radial-gradient(ellipse at 22% 10%, #fffdf366, transparent 70%), linear-gradient(145deg, #fffef52e, #c79b6612);
+  --tile-shadow: inset 0 2px 0 #fffef56b, inset 0 -3px 0 #7a77551c, 0 2px 4px #5c7e5414;
+  text-shadow: 0 1px 0 #fffef540;
+}
+.hero-wash {
+  border-radius: 46% 54% 61% 39% / 48% 43% 57% 52%;
+  background: radial-gradient(ellipse at 35% 34%, #fffbe4cc, transparent 70%), radial-gradient(ellipse at 65% 67%, #a5d6bb80, transparent 72%);
+}
+.hero-tile {
+  border: 1px solid #829d6b38;
+  background-image: radial-gradient(ellipse at 18% 10%, #fffef56b, transparent 80%), linear-gradient(135deg, #fffef52b, #b27a4d0a);
+  box-shadow: inset 0 2px 0 #fffef594, inset 0 -3px 0 #7a77551a, 0 14px 25px #4c805523;
+}
+.hero-bubble {
+  position: absolute;
+  border: 1px solid #91bba64d;
+  border-radius: 50%;
+  background: radial-gradient(circle at 27% 22%, #fffff5cf 0 6%, transparent 13%), linear-gradient(140deg, #f8fff16b, transparent 54%, #f8d3bd52);
+  box-shadow: inset 1px 1px 3px #fffff5b3, inset -1px -2px 3px #91bba633;
 }
 .tile-arriving { animation: arrive 120ms ease-out; }
 .score-gain { animation: score-gain 750ms ease-out both; }

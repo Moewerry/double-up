@@ -15,8 +15,8 @@ export function TutorialPanel({ state }: { state: TutorialState }) {
     <div className="flex items-center justify-between gap-3 text-xs text-muted-foreground"><span>新手教程</span><span className="font-numerals font-extrabold tabular-nums">{state.step + 1} / {tutorialSteps.length}</span></div>
     <Progress className="mt-2 h-1.5" value={completed / tutorialSteps.length * 100} aria-label="教程进度" aria-valuetext={`已完成 ${completed} 个练习，共 ${tutorialSteps.length} 个`} />
     <div className="mt-3 text-center lg:mt-8 lg:text-left" role="status" aria-live="polite" aria-atomic="true">
-      <h2 className={cn("flex min-h-9 items-center justify-center gap-2 text-2xl font-extrabold tracking-tight lg:justify-start lg:text-3xl", passed && "text-[#3d7951]")}>{passed && <Icon className="size-6 shrink-0" aria-hidden />}{title}</h2>
-      <p key={`${state.step}-${state.hint}`} className="mt-1 min-h-4 text-xs text-[#a95233]">{feedback || <span aria-hidden>&nbsp;</span>}</p>
+      <h2 className={cn("flex min-h-9 items-center justify-center gap-2 text-2xl font-extrabold tracking-tight lg:justify-start lg:text-3xl", passed && "text-success")}>{passed && <Icon className="size-6 shrink-0" aria-hidden />}{title}</h2>
+      <p key={`${state.step}-${state.hint}`} className="mt-1 min-h-4 text-xs text-coral">{feedback || <span aria-hidden>&nbsp;</span>}</p>
     </div>
   </div>
 }

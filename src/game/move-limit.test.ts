@@ -1,8 +1,10 @@
-import { describe, expect, it } from "vitest"
+import { describe, expect, it, vi } from "vitest"
 import { canMove, createSession, move, undo } from "./engine"
 import { getLevel } from "./levels"
 import { failureReason, remainingMoves } from "./rules"
 import type { Session } from "./types"
+
+vi.mock("./levels", () => import("./legacy-levels.fixture"))
 
 const limit = getLevel(4).maxMoves!
 function fixture(board: number[], moves: number, level = 4): Session {

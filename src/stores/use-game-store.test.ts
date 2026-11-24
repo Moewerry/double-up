@@ -3,6 +3,8 @@ import { decodeSave, emptySave, SAVE_KEY } from "@/lib/storage"
 import { createSession } from "@/game/engine"
 import { getLevel } from "@/game/levels"
 
+vi.mock("@/game/levels", () => import("@/game/legacy-levels.fixture"))
+
 beforeEach(() => vi.resetModules())
 afterEach(() => vi.unstubAllGlobals())
 

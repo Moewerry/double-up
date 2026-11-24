@@ -1,6 +1,7 @@
 import { createSession, move } from "./engine"
 import { getLevel } from "./levels"
 import type { Direction, Motion, Session } from "./types"
+import { slideTiles } from "./movement"
 
 interface PracticeTile { readonly value: number; readonly position: number }
 export interface TutorialStep {
@@ -15,7 +16,7 @@ export interface TutorialStep {
 }
 
 export const tutorialSteps: readonly TutorialStep[] = [
-  { id: "slide", prompt: "往左滑", success: "新数字出现了", kind: "move", direction: "left", tiles: [{ value: 2, position: 3 }, { value: 2, position: 11 }], highlight: [] },
+  { id: "slide", prompt: "往左滑", success: "两个数字一起移动了", kind: "move", direction: "left", tiles: [{ value: 2, position: 3 }, { value: 2, position: 11 }], highlight: [] },
   { id: "merge", prompt: "让 2 碰在一起", success: "2 + 2 = 4", kind: "merge", direction: "left", tiles: [{ value: 2, position: 4 }, { value: 2, position: 7 }], highlight: [4, 7] },
   { id: "up", prompt: "试试向上", success: "2 + 2 = 4", kind: "merge", direction: "up", tiles: [{ value: 2, position: 0 }, { value: 2, position: 12 }], highlight: [0, 12] },
   { id: "right", prompt: "向右合并", success: "4 + 4 = 8", kind: "merge", direction: "right", tiles: [{ value: 4, position: 4 }, { value: 4, position: 7 }], highlight: [4, 7] },
@@ -30,7 +31,7 @@ export const tutorialSteps: readonly TutorialStep[] = [
   { id: "line-up", prompt: "向上把两个 4 排到同一行", success: "现在两个 4 在最上面一行", kind: "move", direction: "up", tiles: [{ value: 4, position: 8 }, { value: 4, position: 13 }], highlight: [8, 13] },
   { id: "merge-row", prompt: "换方向，向左合出 8", success: "先对齐，再合并", kind: "merge", direction: "left", carry: true, highlight: [0, 1] },
   { id: "target", prompt: "向下把两个 8 合成 16", success: "合出本关目标 16 了", kind: "merge", direction: "down", tiles: [{ value: 8, position: 1 }, { value: 8, position: 9 }], highlight: [1, 9] },
-  { id: "practice", prompt: "自己合出 16", success: "学会了！", kind: "free", highlight: [] },
+  { id: "practice", prompt: "自己合出 4", success: "学会了！", kind: "free", highlight: [] },
 ]
 
 export interface TutorialState {
@@ -62,11 +63,20 @@ function enterStep(step: number, previous?: Session, revision = 0): TutorialStat
 export function createTutorial(revision = 0): TutorialState { return enterStep(0, undefined, revision) }
 export function tutorialComplete(state: TutorialState) { return state.step === tutorialSteps.length - 1 && state.phase === "passed" }
 
+function movePractice(session: Session, direction: Direction) {
+  // 练习由各步的教学条件判断完成，共享滑动规则，不生成数字或提前结束后续练习。
+  const result = slideTiles(session, direction)
+  return {
+    session: result.changed ? { ...session, tiles: result.tiles, score: session.score + result.gained, moves: session.moves + 1, nextId: result.nextId } : session,
+    motions: result.changed ? result.motions : [], gained: result.gained,
+  }
+}
+
 export function moveTutorial(state: TutorialState, direction: Direction): TutorialState {
   if (state.phase !== "playing") return state
   const lesson = tutorialSteps[state.step]
   if (lesson.direction && direction !== lesson.direction) return { ...state, feedback: "direction", hint: state.hint + 1 }
-  const result = move(state.session, direction)
+  const result = lesson.kind === "free" ? move(state.session, direction) : movePractice(state.session, direction)
   if (result.session === state.session) return { ...state, feedback: "blocked", hint: state.hint + 1 }
   const passed = lesson.kind === "free" ? result.session.status === "won"
     : lesson.kind === "move" ? true

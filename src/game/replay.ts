@@ -12,7 +12,7 @@ export interface LevelReplay {
   target: number
   maxMoves?: number
   directions: Direction[]
-  expected: { score: number; moves: number; maximum: number; random: number; board: number[] }
+  expected: { score: number; moves: number; maximum: number; random: number; board: number[]; openedDoors?: number[]; collapsedCells?: number[] }
 }
 
 export function boardValues(session: Session): number[] {
@@ -25,7 +25,10 @@ export function recordReplay(session: Session, directions: Direction[]): LevelRe
   return {
     rules: 1, level: level.id, configVersion: session.configVersion, seed: session.seed, target: level.target, maxMoves: level.maxMoves,
     directions: [...directions],
-    expected: { score: session.score, moves: session.moves, maximum: Math.max(...session.tiles.map(tile => tile.value)), random: session.random, board: boardValues(session) },
+    expected: {
+      score: session.score, moves: session.moves, maximum: Math.max(0, ...session.tiles.map(tile => tile.value)), random: session.random, board: boardValues(session),
+      ...(level.puzzle ? { openedDoors: [...(session.openedDoors ?? [])], collapsedCells: [...(session.collapsedCells ?? [])] } : {}),
+    },
   }
 }
 
@@ -52,6 +55,7 @@ export function replaySolution(input: unknown): Session {
     session = next
   }
   if (session.status !== "won") throw new Error(`第 ${level.id} 关路径未能通关。`)
-  if (session.score !== expected.score || session.moves !== expected.moves || Math.max(...session.tiles.map(tile => tile.value)) !== expected.maximum || session.random !== expected.random || JSON.stringify(boardValues(session)) !== JSON.stringify(expected.board)) throw new Error(`第 ${level.id} 关的回放结果与记录不一致。`)
+  if (session.score !== expected.score || session.moves !== expected.moves || Math.max(0, ...session.tiles.map(tile => tile.value)) !== expected.maximum || session.random !== expected.random || JSON.stringify(boardValues(session)) !== JSON.stringify(expected.board)) throw new Error(`第 ${level.id} 关的回放结果与记录不一致。`)
+  if (level.puzzle && (JSON.stringify(session.openedDoors) !== JSON.stringify(expected.openedDoors) || JSON.stringify(session.collapsedCells) !== JSON.stringify(expected.collapsedCells))) throw new Error(`第 ${level.id} 关的机关状态与记录不一致。`)
   return session
 }

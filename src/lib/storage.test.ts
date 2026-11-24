@@ -4,6 +4,8 @@ import { getLevel } from "@/game/levels"
 import type { Direction } from "@/game/types"
 import { decodeSave, emptySave, loadSave, persist } from "./storage"
 
+vi.mock("@/game/levels", () => import("@/game/legacy-levels.fixture"))
+
 beforeEach(() => vi.stubGlobal("crypto", { getRandomValues: vi.fn((values: Uint32Array) => { values[0] = 104729; return values }) }))
 afterEach(() => vi.unstubAllGlobals())
 

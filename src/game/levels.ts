@@ -1,13 +1,28 @@
-import type { LevelConfig } from "./level-types"
+import type { LevelConfig, PuzzleGoal } from "./level-types"
+import { levelDesigns } from "./level-designs"
 
-// 开发预览配置，需由所有者回放验证后再作为正式内容发布。
-export const levels: readonly LevelConfig[] = [
-  { id: 1, version: 1, type: "merge", title: "第一次翻倍", target: 16, seed: 104729, tip: "试着让两个相同的数字碰在一起。" },
-  { id: 2, version: 1, type: "merge", title: "好事成双", target: 32, seed: 130363, tip: "把小数字慢慢合成更大的数字。" },
-  { id: 3, version: 1, type: "layout", title: "留一点空间", target: 64, seed: 155921, tip: "空位越多，下一步的选择就越多。" },
-  { id: 4, version: 2, type: "moves", title: "步步为营", target: 64, maxMoves: 60, seed: 180503, tip: "在 60 步内合出 64。" },
-  { id: 5, version: 2, type: "moves", title: "精准翻倍", target: 64, maxMoves: 45, seed: 205019, tip: "在 45 步内合出 64。" },
-]
+export const levels: readonly LevelConfig[] = levelDesigns.map((design, index): LevelConfig => {
+  const initialTiles: { position: number; value: number }[] = []
+  const walls: number[] = [], fragile: number[] = []
+  const doors: { position: number; value: number }[] = []
+  let goal: PuzzleGoal = { kind: design.goal ?? "merge" }
+  if (design.board.some(row => row.split(" ").length !== 4)) throw new Error(`第 ${index + 1} 关必须使用 4×4 棋盘。`)
+  const cells = design.board.flatMap(row => row.split(" "))
+  for (const [position, cell] of cells.entries()) {
+    if (cell === "#") walls.push(position)
+    else if (cell === "F") fragile.push(position)
+    else if (cell.startsWith("K")) doors.push({ position, value: Number(cell.slice(1)) })
+    else if (cell === "G") goal = { kind: "deliver", position }
+    else if (cell !== ".") initialTiles.push({ position, value: Number(cell) })
+  }
+  fragile.push(...(design.fragile ?? []))
+  return {
+    id: index + 1, version: 10, type: fragile.length ? "fragile" : doors.length ? "doors" : goal.kind === "deliver" ? "delivery" : walls.length ? "layout" : "merge",
+    title: design.title, target: design.target, seed: 104729 + index, tip: design.tip,
+    hintDirection: design.hintDirection,
+    puzzle: { initialTiles, walls, doors, fragile, goal, solution: design.solution },
+  }
+})
 
 export function getLevel(id: number): LevelConfig {
   const level = levels.find(level => level.id === id)

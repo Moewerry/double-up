@@ -2,6 +2,8 @@ import { afterEach, describe, expect, it, vi } from "vitest"
 import { createSession } from "./engine"
 import { levels } from "./levels"
 
+vi.mock("./levels", () => import("./legacy-levels.fixture"))
+
 afterEach(() => { vi.unstubAllGlobals(); vi.restoreAllMocks() })
 
 describe("随机开局", () => {

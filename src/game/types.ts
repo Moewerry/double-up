@@ -8,6 +8,8 @@ export interface Snapshot {
   random: number
   nextId: number
   status: Status
+  openedDoors?: number[]
+  collapsedCells?: number[]
 }
 export interface Session extends Snapshot {
   level: number
@@ -27,4 +29,4 @@ export interface Save {
   music: boolean
   directions: boolean
 }
-export interface Motion { tile: Tile; destination: number; merged: boolean }
+export interface Motion { tile: Tile; destination: number; merged: boolean; consumed?: boolean }

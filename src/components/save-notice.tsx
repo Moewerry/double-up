@@ -8,7 +8,7 @@ export function SaveNotice() {
   const unavailable = saveStatus === "unavailable"
   if (!notice && !unavailable) return null
 
-  return <Card role="alert" className="mb-4 gap-0 border-[#d3aa78] bg-[#fff0d7] py-0 text-[#704921] shadow-none">
+  return <Card role="alert" className="mb-4 gap-0 border-warning-border bg-warning-soft py-0 text-warning shadow-none">
     <CardContent className="p-3 text-xs leading-6">
       <div className="flex items-start gap-2">
         <AlertCircle className="mt-1 size-4 shrink-0" aria-hidden />

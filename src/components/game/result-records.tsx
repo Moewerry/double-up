@@ -11,5 +11,5 @@ export function ResultRecords({ level }: { level: number }) {
   const achievements = feedback?.firstClear ? ["首次通关"] : [feedback?.bestScore && "刷新最高分", feedback?.fewestMoves && "刷新最少步数"].filter(Boolean)
   if (achievements.length === 0) return null
 
-  return <p className="flex flex-wrap items-center justify-center gap-2 text-xs font-semibold text-[#427355]"><Sparkles className="size-4" aria-hidden />{achievements.join(" · ")}</p>
+  return <p className="flex flex-wrap items-center justify-center gap-2 text-xs font-semibold text-success"><Sparkles className="size-4" aria-hidden />{achievements.join(" · ")}</p>
 }

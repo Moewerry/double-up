@@ -1,6 +1,8 @@
-import { describe, expect, it } from "vitest"
+import { describe, expect, it, vi } from "vitest"
 import { canMove, createSession, move, undo } from "./engine"
 import type { Direction, Session } from "./types"
+
+vi.mock("./levels", () => import("./legacy-levels.fixture"))
 
 function fixture(board: readonly number[], level = 5): Session {
   return { ...createSession(level, 205019), tiles: board.flatMap((value, position) => value ? [{ id: position + 1, value, position }] : []), nextId: 17 }

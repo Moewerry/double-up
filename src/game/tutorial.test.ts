@@ -66,20 +66,17 @@ describe("交互教程", () => {
     expect(nextTutorialStep(won)).toBe(won)
   })
 
-  it("引导练习固定，最后的自由练习及重试使用新的随机开局", () => {
-    const seeds = [1, 65536]
-    const getRandomValues = vi.fn((values: Uint32Array) => { values[0] = seeds.shift()!; return values })
+  it("引导练习独立，最后的自由练习及重试恢复第一关固定布局", () => {
+    const getRandomValues = vi.fn(() => { throw new Error("固定关卡不应抽取随机数") })
     vi.stubGlobal("crypto", { getRandomValues })
     expect(createTutorial()).toEqual(createTutorial())
     expect(getRandomValues).not.toHaveBeenCalled()
     const state = completeGuidedSteps()
-    expect(state.session.seed).toBe(1)
-    expect(getRandomValues).toHaveBeenCalledTimes(1)
+    expect(state.session).toEqual(createSession(1))
     const reset = resetTutorialStep(state)
-    expect(reset.session.seed).toBe(65536)
-    expect(reset.session.tiles[0].position).toBe(2)
+    expect(reset.session).toEqual(createSession(1))
     expect(reset.session).toBe(reset.checkpoint)
     expect(reset.phase).toBe("playing")
-    expect(getRandomValues).toHaveBeenCalledTimes(2)
+    expect(getRandomValues).not.toHaveBeenCalled()
   })
 })

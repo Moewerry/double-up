@@ -12,13 +12,13 @@ export function KeyboardGuideDialog({ onOpenChange }: { onOpenChange: (open: boo
         <section aria-label="方向键" className="space-y-3 text-center">
           <h2 className="text-sm font-medium">方向键</h2>
           <div className="mx-auto grid w-fit grid-cols-3 gap-1.5">
-            {([[ArrowUp, "向上", "col-start-2"], [ArrowLeft, "向左", "col-start-1"], [ArrowDown, "向下", ""], [ArrowRight, "向右", ""]] as const).map(([Icon, label, position]) => <Kbd key={label} className={`size-10 rounded-lg border bg-white text-foreground shadow-sm ${position}`} aria-label={label}><Icon className="size-4" aria-hidden /></Kbd>)}
+            {([[ArrowUp, "向上", "col-start-2"], [ArrowLeft, "向左", "col-start-1"], [ArrowDown, "向下", ""], [ArrowRight, "向右", ""]] as const).map(([Icon, label, position]) => <Kbd key={label} className={`size-10 rounded-lg border bg-card text-foreground shadow-sm ${position}`} aria-label={label}><Icon className="size-4" aria-hidden /></Kbd>)}
           </div>
         </section>
         <section aria-label="WASD 按键" className="space-y-3 text-center">
           <h2 className="text-sm font-medium">WASD</h2>
           <div className="mx-auto grid w-fit grid-cols-3 gap-1.5">
-            {([ ["W", "向上", "col-start-2"], ["A", "向左", "col-start-1"], ["S", "向下", ""], ["D", "向右", ""] ] as const).map(([key, label, position]) => <Kbd key={key} className={`size-10 rounded-lg border bg-white text-base text-foreground shadow-sm ${position}`} aria-label={`${key}，${label}`}>{key}</Kbd>)}
+            {([ ["W", "向上", "col-start-2"], ["A", "向左", "col-start-1"], ["S", "向下", ""], ["D", "向右", ""] ] as const).map(([key, label, position]) => <Kbd key={key} className={`size-10 rounded-lg border bg-card text-base text-foreground shadow-sm ${position}`} aria-label={`${key}，${label}`}>{key}</Kbd>)}
           </div>
         </section>
       </div>
