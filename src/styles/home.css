@@ -144,17 +144,16 @@
 }
 
 .home-icon-button {
+  @apply border-0 bg-transparent;
   position: relative;
   width: clamp(32px, 8svmin, 48px);
   height: clamp(32px, 8svmin, 48px);
   padding: 0;
-  border: clamp(1.5px, .2vw, 3px) solid var(--border);
   border-radius: 42%;
   color: var(--foreground);
-  background: var(--background);
 }
 .home-icon-button::before { content: ""; position: absolute; inset: -6px; }
-.home-icon-button:hover { background: #faf3ec; }
+.home-icon-button:hover { @apply text-primary; }
 .home-icon-button:active { transform: scale(.97); }
 .home-icon-button svg { width: 58%; height: 58%; stroke-width: 3; }
 .home-help-mark {

@@ -8,11 +8,14 @@ interface PreviewFrame {
   tiles: Tile[]
 }
 
-const turns: readonly { direction: Direction; pause: number; partner?: Omit<Tile, "id"> }[] = [
+type PreviewTile = Omit<Tile, "id">
+
+const turns: readonly { direction: Direction; pause: number; arrivals?: readonly PreviewTile[] }[] = [
   { direction: "left", pause: 650 },
-  { direction: "up", pause: 640, partner: { value: 4, position: 12 } },
-  { direction: "right", pause: 480 },
-  { direction: "down", pause: 640, partner: { value: 8, position: 11 } },
+  { direction: "up", pause: 640, arrivals: [{ value: 4, position: 12 }] },
+  // The edge tiles stop the two 8s one cell short of the corner.
+  { direction: "right", pause: 180, arrivals: [{ value: 4, position: 3 }] },
+  { direction: "down", pause: 640, arrivals: [{ value: 8, position: 10 }, { value: 2, position: 14 }] },
 ]
 
 function createPreviewSequence() {
@@ -23,10 +26,10 @@ function createPreviewSequence() {
   const frames: PreviewFrame[] = [{ delay: 0, tiles: [] }, { delay: 740, tiles: snapshot.tiles }]
   const mergedIds = new Set<number>()
 
-  for (const { direction, pause, partner } of turns) {
-    if (partner) {
-      const tile = { ...partner, id: snapshot.nextId }
-      snapshot = { ...snapshot, tiles: [...snapshot.tiles, tile], nextId: snapshot.nextId + 1 }
+  for (const { direction, pause, arrivals } of turns) {
+    if (arrivals) {
+      const addedTiles = arrivals.map((tile, index) => ({ ...tile, id: snapshot.nextId + index }))
+      snapshot = { ...snapshot, tiles: [...snapshot.tiles, ...addedTiles], nextId: snapshot.nextId + addedTiles.length }
       frames.push({ delay: 300, tiles: snapshot.tiles })
     }
 
@@ -41,7 +44,10 @@ function createPreviewSequence() {
     snapshot = { ...snapshot, tiles: result.tiles, nextId: result.nextId }
   }
 
-  return { frames, finalTiles: snapshot.tiles, mergedIds }
+  const finalTiles = [...snapshot.tiles, { id: snapshot.nextId, value: 2, position: 1 }]
+  frames.push({ delay: 320, tiles: finalTiles })
+
+  return { frames, finalTiles, mergedIds }
 }
 
 export const previewSequence = createPreviewSequence()
