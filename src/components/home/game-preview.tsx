@@ -1,9 +1,10 @@
 import { AccentMarks } from "./accent-marks"
+import { PreviewMergeTile } from "./preview-merge-tile"
 
 const previewTiles: Partial<Record<number, number>> = { 1: 2, 7: 4, 8: 8, 10: 16 }
 
 export function GamePreview() {
-  return <div aria-hidden className="home-board-art home-motion:animate-home-impact-enter">
+  return <div aria-hidden className="home-board-art home-motion:animate-home-enter">
     <span className="home-board-shape home-board-shape--sage" />
     <span className="home-board-shape home-board-shape--peach" />
     <span className="home-board-shape home-board-shape--cream" />
@@ -11,9 +12,9 @@ export function GamePreview() {
       {Array.from({ length: 16 }, (_, position) => {
         const value = previewTiles[position]
         return <div key={position} className="home-preview-cell">
-          {value !== undefined && (
+          {value === 16 ? <PreviewMergeTile /> : value !== undefined && (
             <span
-              className="home-preview-tile grid size-full place-items-center rounded-[inherit] home-motion:animate-home-tile-appear"
+              className="home-preview-tile home-motion:animate-home-tile-appear"
               data-value={value}
             >
               {value}
