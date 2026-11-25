@@ -37,7 +37,7 @@ export function HomePage() {
             disabled={blocked}
             asChild={!blocked}
           >
-            {blocked ? <span>请先恢复存档</span> : <Link to="/play">{label}<ArrowRight data-icon="inline-end" /></Link>}
+            {blocked ? <span>请先恢复存档</span> : <Link to="/play">{label}<ArrowRight data-icon="inline-end" className="hidden min-[1024px]:block" /></Link>}
           </Button>
         </div>
         <GamePreview />
