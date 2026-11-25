@@ -90,6 +90,7 @@
   --home-action-enter-at: 820ms;
   --home-loop-start: 1220ms;
   --home-pulse-duration: 5.6s;
+  --home-wave-height: clamp(56px, 10svh, 112px);
   --background: #fffefd;
   --foreground: #684638;
   --primary: #ff784f;
@@ -113,7 +114,7 @@
   width: 100%;
   max-width: 1800px;
   margin-inline: auto;
-  padding: max(clamp(16px, 4vw, 40px), env(safe-area-inset-top)) 7.5% 0;
+  padding: max(clamp(16px, 4svmin, 40px), env(safe-area-inset-top)) 7.5% 0;
 }
 
 .home-header {
@@ -127,7 +128,7 @@
 .home-brand .brand-mark { display: none; }
 .home-brand .brand-word {
   font-family: "Nunito", "Arial Rounded MT Bold", sans-serif;
-  font-size: clamp(23px, 5.8vw, 54px);
+  font-size: clamp(23px, 5.8svmin, 40px);
   font-weight: 900;
   line-height: 1;
   letter-spacing: -.065em;
@@ -141,8 +142,8 @@
 
 .home-icon-button {
   position: relative;
-  width: clamp(32px, 8vw, 76px);
-  height: clamp(32px, 8vw, 76px);
+  width: clamp(32px, 8svmin, 48px);
+  height: clamp(32px, 8svmin, 48px);
   padding: 0;
   border: clamp(1.5px, .2vw, 3px) solid var(--border);
   border-radius: 42%;
@@ -155,7 +156,7 @@
 .home-icon-button svg { width: 58%; height: 58%; stroke-width: 3; }
 .home-help-mark {
   font-family: "Nunito", sans-serif;
-  font-size: clamp(26px, 4.7vw, 50px);
+  font-size: clamp(26px, 4.7svmin, 36px);
   font-weight: 900;
   line-height: 1;
 }
@@ -165,9 +166,10 @@
   flex: 1;
   grid-template-areas: "title" "board" "action";
   grid-template-columns: minmax(0, 1fr);
-  align-content: start;
+  align-content: safe center;
   justify-items: center;
-  padding-block: clamp(32px, calc(15vw - 28px), 120px) calc(clamp(84px, 20vw, 180px) + env(safe-area-inset-bottom));
+  padding-block: clamp(20px, 4svh, 40px) calc(var(--home-wave-height) + env(safe-area-inset-bottom));
+  @apply gap-y-[clamp(24px,4svh,38px)];
 }
 .home-copy { display: contents; }
 .home-headline {
@@ -181,7 +183,7 @@
 .home-headline-text {
   position: relative;
   font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
-  font-size: clamp(24px, 8.2vw, 80px);
+  font-size: clamp(24px, 8.2svmin, 64px);
   font-weight: 900;
   line-height: 1.2;
   letter-spacing: .01em;
@@ -197,7 +199,7 @@
   display: block;
   color: var(--primary);
   font-family: "Nunito", "Arial Rounded MT Bold", sans-serif;
-  font-size: clamp(76px, 20.5vw, 192px);
+  font-size: clamp(68px, 20.5svmin, 152px);
   font-style: italic;
   font-weight: 900;
   line-height: .96;
@@ -210,7 +212,7 @@
   bottom: -22%;
   width: 87%;
   height: 17%;
-  border-top: clamp(9px, 2.5vw, 24px) solid #ffccba;
+  border-top: clamp(8px, 2.5svmin, 20px) solid #ffccba;
   border-radius: 50%;
   transform: rotate(-3deg);
 }
@@ -219,9 +221,8 @@
   --home-enter-at: var(--home-action-enter-at);
   --home-enter-offset: 20px;
   grid-area: action;
-  width: 76%;
-  height: clamp(48px, 13vw, 124px);
-  margin-top: clamp(32px, 9vw, 88px);
+  width: min(84%, 420px);
+  height: clamp(48px, 13svmin, 72px);
   padding-inline: clamp(20px, 4vw, 48px);
   gap: clamp(12px, 3vw, 32px);
   border: 1px solid #ffb39b;
@@ -230,13 +231,13 @@
   background: linear-gradient(165deg, #ff9574, #ff7146);
   box-shadow: 0 12px 24px #df86552b, inset 0 1px 0 #ffffff66;
   font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
-  font-size: clamp(20px, 5.3vw, 52px);
+  font-size: clamp(20px, 5.3svmin, 32px);
   font-weight: 800;
   line-height: 1;
 }
 .home-start-button:hover { filter: brightness(1.035); box-shadow: 0 14px 28px #df865538; }
 .home-start-button:active { transform: translateY(2px); box-shadow: 0 5px 12px #df865526; }
-.home-start-button svg { width: clamp(24px, 6vw, 58px); height: clamp(24px, 6vw, 58px); stroke-width: 2.4; }
+.home-start-button svg { width: clamp(24px, 6svmin, 36px); height: clamp(24px, 6svmin, 36px); stroke-width: 2.4; }
 
 .home-board-art {
   --home-impact-at: var(--home-board-enter-at);
@@ -248,10 +249,8 @@
   isolation: isolate;
   container-type: inline-size;
   grid-area: board;
-  width: 83%;
-  max-width: 660px;
+  width: min(88%, clamp(192px, 38svh, 540px));
   aspect-ratio: 1;
-  margin-top: clamp(20px, calc(10.7vw - 30px), 72px);
 }
 .home-preview-board {
   position: absolute;
@@ -347,11 +346,17 @@
   z-index: 2; right: 24%; top: 45%; width: 8%; height: 8%;
 }
 
-.home-waves { position: absolute; inset-inline: 0; bottom: 0; z-index: 0; height: clamp(84px, 20vw, 190px); overflow: hidden; pointer-events: none; }
+.home-waves { position: absolute; inset-inline: 0; bottom: 0; z-index: 0; height: var(--home-wave-height); overflow: hidden; pointer-events: none; }
 .home-waves span { position: absolute; border-radius: 50% 50% 0 0; }
 .home-waves span:nth-child(1) { left: -12%; bottom: -130%; width: 76%; height: 200%; background: linear-gradient(160deg, #fff0e8, #fffbf6); transform: rotate(12deg); }
 .home-waves span:nth-child(2) { right: -13%; bottom: -145%; width: 80%; height: 210%; background: linear-gradient(170deg, #fff6e8, #fff1df); transform: rotate(-12deg); }
 .home-waves span:nth-child(3) { right: -16%; bottom: -110%; width: 45%; height: 220%; background: linear-gradient(150deg, #fff5f1, #fffdfb); transform: rotate(-22deg); }
+
+@media (width < 1024px) {
+  .home-board-shape--sage { left: -11%; }
+  .home-board-shape--peach,
+  .home-board-shape--cream { right: -11%; }
+}
 
 @media (min-width: 1024px) {
   .home-page { padding: max(clamp(24px, 2.1vw, 36px), env(safe-area-inset-top)) 5.75% 0; }
@@ -363,7 +368,6 @@
     grid-template-areas: "copy board";
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
     align-items: center;
-    align-content: safe center;
     column-gap: clamp(40px, 4vw, 72px);
     width: 100%;
     max-width: 1440px;
@@ -376,8 +380,8 @@
   .home-headline-text::after { content: ""; position: absolute; right: 12%; top: -.4em; width: .16em; height: .65em; border-radius: 999px; background: #ffe0a0; transform: rotate(36deg); }
   .home-headline-number { font-size: clamp(112px, 10.1vw, 176px); }
   .home-headline-number::after { border-top-width: clamp(14px, 1.4vw, 24px); }
-  .home-board-art { --home-impact-x: clamp(16px, 2.5vw, 32px); justify-self: start; width: min(100%, 620px); max-width: none; margin-top: 0; }
-  .home-start-button { width: min(100%, 492px); height: clamp(64px, 6.2vw, 108px); margin-top: 0; padding-inline: 24px; font-size: clamp(26px, 2.8vw, 48px); }
+  .home-board-art { --home-impact-x: clamp(16px, 2.5vw, 32px); justify-self: start; width: min(100%, 620px); }
+  .home-start-button { width: min(100%, 492px); height: clamp(64px, 6.2vw, 108px); padding-inline: 24px; font-size: clamp(26px, 2.8vw, 48px); }
   .home-start-button svg { width: clamp(30px, 3vw, 52px); height: clamp(30px, 3vw, 52px); }
   .home-waves { height: clamp(120px, 11vw, 190px); }
 }
