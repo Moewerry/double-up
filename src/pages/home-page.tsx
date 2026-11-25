@@ -19,7 +19,7 @@ export function HomePage() {
   return <>
     <HomeBackdrop />
     <div className="home-page">
-      <header className="home-header">
+      <header className="home-header home-motion:animate-home-enter [--home-enter-offset:-6px]">
         <Brand className="home-brand" />
         <div className="home-header-actions">
           <Button variant="home-icon" size="icon" asChild>
@@ -31,7 +31,12 @@ export function HomePage() {
       <section className="home-hero">
         <div className="home-copy">
           <HomeHeadline />
-          <Button variant="home-start" disabled={blocked} asChild={!blocked}>
+          <Button
+            variant="home-start"
+            className="home-motion:animate-home-enter [--home-enter-delay:165ms]"
+            disabled={blocked}
+            asChild={!blocked}
+          >
             {blocked ? <span>请先恢复存档</span> : <Link to="/play">{label}<ArrowRight data-icon="inline-end" /></Link>}
           </Button>
         </div>

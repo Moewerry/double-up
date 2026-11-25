@@ -1,3 +1,39 @@
+@theme inline {
+  --animate-home-enter: home-enter 280ms cubic-bezier(.23, 1, .32, 1) var(--home-enter-delay, 0ms) backwards;
+  --animate-home-tile-merge: home-tile-merge var(--home-merge-timing);
+  --animate-home-merge-accent: home-merge-accent var(--home-merge-timing);
+  --animate-home-wave: home-wave 14s ease-in-out var(--home-wave-delay, 0s) infinite alternate;
+}
+
+/* Match the reduced-motion policy in globals.css and use-reduced-motion.ts. */
+@custom-variant home-motion {
+  @media (prefers-reduced-motion: no-preference), (any-pointer: coarse) {
+    @slot;
+  }
+}
+
+@keyframes home-enter {
+  from {
+    opacity: 0;
+    translate: 0 var(--home-enter-offset, 10px);
+    scale: var(--home-enter-scale, 1);
+  }
+}
+
+@keyframes home-tile-merge {
+  0%, 16%, 100% { scale: 1; }
+  8% { scale: 1.055; }
+}
+
+@keyframes home-merge-accent {
+  0%, 21%, 100% { opacity: .75; scale: 1; }
+  10% { opacity: 1; scale: 1.16; }
+}
+
+@keyframes home-wave {
+  to { translate: clamp(6px, 2vw, 24px) -6px; }
+}
+
 .home-shell {
   --background: #fffefd;
   --foreground: #684638;
@@ -141,6 +177,7 @@
 .home-start-button svg { width: clamp(24px, 6vw, 58px); height: clamp(24px, 6vw, 58px); stroke-width: 2.4; }
 
 .home-board-art {
+  --home-merge-timing: 5.6s ease-in-out 700ms infinite backwards;
   position: relative;
   isolation: isolate;
   container-type: inline-size;
