@@ -19,7 +19,7 @@ export function HomePage() {
   return <>
     <HomeBackdrop />
     <div className="home-page">
-      <header className="home-header home-motion:animate-home-enter [--home-enter-offset:-6px]">
+      <header className="home-header home-motion:animate-home-enter home-motion:focus-within:opacity-100! [--home-enter-offset:-6px]">
         <Brand className="home-brand" />
         <div className="home-header-actions">
           <Button variant="home-icon" size="icon" asChild>
@@ -33,7 +33,7 @@ export function HomePage() {
           <HomeHeadline />
           <Button
             variant="home-start"
-            className="home-motion:animate-home-enter [--home-enter-delay:165ms]"
+            className="home-motion:animate-home-enter home-motion:focus-visible:opacity-100!"
             disabled={blocked}
             asChild={!blocked}
           >
